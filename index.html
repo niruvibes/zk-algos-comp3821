@@ -4,8 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZK Proofs</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lism-css@latest/dist/css/full.css">
+    
+    <!-- katex stuff nico reference. -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+        delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+        ]
+    });"></script>
 </head>
+
 <body>
-    <p>HELLO</p>
+    <header class="l--flex -ai:center -jc:between -px:40 -py:20 -bd:b">
+        <a href="/" class="-fz:m -fw:bold -td:none -c:text">
+            zk. <span class="-mis:5">How to prove nothing</span>
+        </a>
+
+        <nav class="l--cluster -g:30 -fz:s -c:text-2">
+            <a href="#intro" class="-td:none -c:inherit">Intro</a>
+            <a href="#motivation" class="-td:none -c:inherit">Motivation</a>
+            <a href="#mpc" class="-td:none -c:inherit">MPC</a>
+            <a href="#fiat" class="-td:none -c:inherit">Fiat-Shamir</a>
+        </nav>
+    
+    </header>
+
+    <main class="l--center -p:40 -ta:center -bgc:red">
+        <p>HELLO</p>
+    </main>
 </body>
 </html>
