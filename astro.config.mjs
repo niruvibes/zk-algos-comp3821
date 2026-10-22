@@ -1,6 +1,6 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-    site: 'https://niruvibes.github.io/zk-algos-comp3821/',
+    site: 'https://niruvibes.github.io',
     base: '/zk-algos-comp3821'
 });
