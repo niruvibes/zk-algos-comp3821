@@ -1,0 +1,101 @@
+---
+import { Stack, Text } from 'lism-css/astro';
+---
+
+<Stack
+  as="section"
+  aria-label="A conversation between a prover and verifier"
+  g="20"
+  w="100%"
+  max-sz="s"
+>
+  <Text
+    className="c--chatMessage"
+    aslf="flex-start"
+    bgc="base-2"
+    c="text"
+    p="20"
+    bdrs="30"
+  >
+    <strong>Prover</strong><br />
+    I wanna prove something
+  </Text>
+
+  <Text
+    className="c--chatMessage"
+    aslf="flex-end"
+    bgc="brand"
+    c="white"
+    p="20"
+    bdrs="30"
+  >
+    <strong>Verifier</strong><br />
+    Show me!!!
+  </Text>
+
+  <Text
+    className="c--chatMessage"
+    aslf="flex-start"
+    bgc="base-2"
+    c="text"
+    p="20"
+    bdrs="30"
+  >
+    <strong>Prover</strong><br />
+    No i dont want to show u
+  </Text>
+
+  <Text
+    className="c--chatMessage"
+    aslf="flex-end"
+    bgc="brand"
+    c="white"
+    p="20"
+    bdrs="30"
+  >
+    <strong>Verifier</strong><br />
+    How are u gonna prove it &gt;:(
+  </Text>
+</Stack>
+
+<style>
+  @layer lism-custom {
+    @keyframes messageAppear {
+      from {
+        opacity: 0;
+        transform: translateY(var(--s10));
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .c--chatMessage {
+      animation: messageAppear 400ms ease-out both;
+    }
+
+    .c--chatMessage:nth-child(1) {
+      animation-delay: 0.5s;
+    }
+
+    .c--chatMessage:nth-child(2) {
+      animation-delay: 2s;
+    }
+
+    .c--chatMessage:nth-child(3) {
+      animation-delay: 3.5s;
+    }
+
+    .c--chatMessage:nth-child(4) {
+      animation-delay: 5s;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .c--chatMessage {
+        animation: none;
+      }
+    }
+  }
+</style>

@@ -1,0 +1,48 @@
+---
+import {
+    Stack,
+    Cluster,
+    Heading,
+    Text,
+    Inline,
+    Link,
+} from 'lism-css/astro';
+---
+
+<!-- <style is:global>
+  @layer lism-custom {
+    :root {
+      --base: #f6f8f5;
+      --base-2: #e7f2eb;
+      --text: #19332f;
+      --text-2: #657873;
+      --brand: #197568;
+    }
+  }
+</style> -->
+
+<Stack g="30" ai="flex-start" max-sz="xs">
+    <Heading level="1" fz="4xl" fw="700" lh="xs">
+        How to Prove<br />
+        Nothing.
+    </Heading>
+
+    <Text fz="m" c="text-2" lh="s">
+        The fundamentals of zero knowledge proofts
+    </Text>
+
+    <Cluster g="30">
+        <Link
+            href="#intro"
+            bgc="yellow"
+            c="white"
+            px="15"
+            py="10"
+            bdrs="20"
+            fz="s"
+            td="none"
+        >
+            Start learning →
+        </Link>
+    </Cluster>
+</Stack>

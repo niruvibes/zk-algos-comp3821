@@ -1,0 +1,48 @@
+---
+import 'lism-css/full.css';
+import Header from '../components/Header.astro';
+import Intro from '../components/intro.astro';
+import Conversation from '../components/conco.astro';
+
+import { Stack, Wrapper, Columns } from 'lism-css/astro';
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZK Proofs</title>
+
+    <!-- katex stuff nico reference. -->
+     <!-- i think there is a better way to do this in astro,
+      this is a remenant from the html -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+        delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+        ]
+    });"></script>
+</head>
+
+<body>
+    <Stack as="body" min-h="100dvh">
+        <Header />
+
+        <Stack as="main" isContainer fx="1" jc="center">
+            <Wrapper
+            contentSize="l"
+            px={['20', '40', '50']}
+            py={['40', '50']}
+            >
+            <Columns cols={[1, null, 2]} g="40" ai="center">
+                <Intro />
+                <Conversation />
+            </Columns>
+            </Wrapper>
+        </Stack>
+    </Stack>
+</body>
+</html>
