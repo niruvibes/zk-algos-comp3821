@@ -1,0 +1,94 @@
+---
+import { Stack, Text, Link } from 'lism-css/astro';
+---
+
+<Stack
+  as="nav"
+  id="lesson-toc"
+  className="c--toc"
+  aria-label="On this page"
+  pos="sticky"
+  t="var(--s30)"
+  g="10"
+>
+  <Link href="#Background" td="none">Background</Link>
+  <Link href="#PoK" td="none" ps="20">Proof of knowledge</Link>
+  <Link href="#completeness" td="none" ps="20">Completeness & Soundness</Link>
+  <Link href="#3-color" td="none" ps="20">Graph 3-coloring</Link>
+  <Link href="#interactive" td="none" ps="20">Interactive vs Non-interactive</Link>
+
+  <Link href="#Background" td="none">Background</Link>
+  <Link href="#Motivation" td="none" ps="20">Motivation</Link>
+  <Link href="#mod1" td="none" ps="20">Basic modular arithmetic</Link>
+  <Link href="#mod2" td="none" ps="20">Multiplicative inverses</Link>
+  <Link href="#mod3" td="none" ps="20">Discrete logarithm</Link>
+
+  <Link href="#MPC" td="none">MPC in the head</Link>
+  <Link href="#secrets" td="none" ps="20">Sharing Secrets</Link>
+  <Link href="#mod3" td="none" ps="20">MPC for discrete logarithm</Link>
+  <Link href="#transformation" td="none" ps="20">Transformation</Link>
+
+  <Link href="#FS" td="none">fiatshamir</Link>
+  <Link href="#secrets" td="none" ps="20">IDK</Link>
+  <Link href="#mod3" td="none" ps="20">What goes</Link>
+  <Link href="#transformation" td="none" ps="20">Here</Link>
+  
+</Stack>
+
+<script>
+  const headings = document.querySelectorAll<HTMLElement>(
+    '[data-lesson] h2[id], [data-lesson] h3[id]'
+  );
+
+  const links = document.querySelectorAll<HTMLAnchorElement>(
+    '#lesson-toc a'
+  );
+
+  function updateCurrentHeading() {
+    let currentId = headings[0]?.id;
+
+    // read line
+    for (const heading of headings) {
+      if (heading.getBoundingClientRect().top <= innerHeight * 0.25) {
+        currentId = heading.id;
+      }
+    }
+
+    if (
+      scrollY > 0 &&
+      Math.ceil(scrollY + innerHeight) >=
+        document.documentElement.scrollHeight
+    ) {
+      currentId = headings[headings.length - 1]?.id;
+    }
+
+    for (const link of links) {
+      if (link.getAttribute('href') === `#${currentId}`) {
+        link.setAttribute('aria-current', 'location');
+      } else {
+        link.removeAttribute('aria-current');
+      }
+    }
+  }
+
+  window.addEventListener('scroll', updateCurrentHeading, {
+    passive: true,
+  });
+
+  window.addEventListener('resize', updateCurrentHeading);
+
+  updateCurrentHeading();
+</script>
+
+<style>
+  @layer lism-custom {
+    .c--toc a {
+      color: var(--text-2);
+    }
+
+    .c--toc a[aria-current="location"] {
+      color: var(--brand);
+      font-weight: var(--fw--bold);
+    }
+  }
+</style>

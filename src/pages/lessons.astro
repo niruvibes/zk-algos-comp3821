@@ -1,0 +1,46 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TOC from '../components/TOC.astro';
+import { WithSide, Box, Stack } from 'lism-css/astro';
+---
+
+<Layout title="Lessons | ZK Proofs">
+  <WithSide sideW="25%" mainW="s" g="40">
+    <Box as="aside" isSide>
+      <TOC />
+    </Box>
+
+    <Stack as="article" data-lesson g="30">
+    <h2 id="zero-knowledge">Zero knowledge</h2>
+    <p>1<br></p>
+    <p>1<br></p>
+    <p>1<br></p>
+    <p>1<br></p>
+    <p>1<br></p>
+    <p>1<br></p>
+    <p>1<br></p>
+    <p>1<br></p>
+    <p>1<br></p>
+    <p>1<br></p>
+    <p>1<br></p>
+    <p>1<br></p>
+    <p>1<br></p>
+    <p>1<br></p>
+    <p>1<br></p>
+    <p>1<br></p>
+    <p>1<br></p>
+    <p>1<br></p>
+    <p>1<br></p>
+
+    <h3 id="completeness">Soundness</h3>
+    <p>3</p>
+
+    <h2 id="MPC">MPC in the head</h2>
+    <p>2</p>
+
+
+    <h2 id="FS">fiat shamir</h2>
+    <p>4</p>
+  </Stack>
+  </WithSide>
+</Layout>
