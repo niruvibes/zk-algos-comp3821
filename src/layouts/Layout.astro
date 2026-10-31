@@ -2,20 +2,54 @@
 import 'lism-css/main.css';
 import '../styles/global.css';
 
+import Header from '../components/Header.astro';
+import { Stack, Wrapper } from 'lism-css/astro';
+
 interface Props {
   title: string;
+  centerContent?: boolean;
 }
 
-const { title } = Astro.props;
+const { title, centerContent = false } = Astro.props;
 ---
 
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
+
+    <!-- katex stuff nico reference. -->
+     <!-- i think there is a better way to do this in astro,
+      this is a remenant from the html -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+        delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+        ]
+    });"></script>
   </head>
-  <body>
-    <slot />
-  </body>
+
+  <Stack as="body" min-h="100dvh">
+    <Header />
+
+    <Stack
+      as="main"
+      isContainer
+      fx="1"
+      jc={centerContent ? 'center' : undefined}
+    >
+      <Wrapper
+        contentSize="l"
+        px={['20', '40', '50']}
+        py={['40', '50']}
+      >
+        <slot />
+      </Wrapper>
+    </Stack>
+  </Stack>
 </html>

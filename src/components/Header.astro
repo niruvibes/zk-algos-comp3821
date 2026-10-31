@@ -1,13 +1,16 @@
+---
+// chat gave me this line, idk if im stupid but idk how to do it without this
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
 <header class="l--flex -ai:center -jc:between -px:40 -py:20 -bd:b">
-	<a href="/" class="-fz:m -fw:bold -td:none -c:text">
+	<a href={`${base}/`} class="-fz:m -fw:bold -td:none -c:text">
 		zk. <span class="-mis:5">How to prove nothing</span>
 	</a>
 
 	<nav class="l--cluster -g:30 -fz:s -c:text-2">
-		<a href="#intro" class="-td:none -c:inherit">Intro</a>
-		<a href="#motivation" class="-td:none -c:inherit">Motivation</a>
-		<a href="#mpc" class="-td:none -c:inherit">MPC</a>
-		<a href="#fiat" class="-td:none -c:inherit">Fiat-Shamir</a>
+		<a href={`${base}/`} class="-td:none -c:inherit">Intro</a>
+		<a href={`${base}/lessons`} class="-td:none -c:inherit">Lessons</a>
 	</nav>
   
 </header>
