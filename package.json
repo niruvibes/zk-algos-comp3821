@@ -9,7 +9,8 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "astro": "^7.3.2",
-    "lism-css": "^1.0.1"
+    "astro": "^7.4.8",
+    "lism-css": "^1.0.1",
+    "node": "^27.0.0-alpha.0.0.0"
   }
 }
