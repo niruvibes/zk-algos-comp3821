@@ -2,19 +2,19 @@
 import Layout from '../layouts/Layout.astro';
 import TOC from '../components/TOC.astro';
 import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
+import Secret_Sharing from '../components/mark/secret_sharing.mdx';
 ---
 <Layout title="Secret Sharing | ZK Proofs">
     <div class="title-background">
         <Heading level="1" fz="4xl" fw="700" lh="xs" class="content">
-            Introduction to <br />
-            Zero-Knowledge Proofs
+            Secret Sharing Schemes
         </Heading>
     </div>
 
     <Stack>        
         <div class="content-background">
             <Box class="content">
-                
+                <Secret_Sharing />
             </Box>
         </div>
     </Stack>
@@ -22,14 +22,14 @@ import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
 
 <style>
     .content-background {
-        background-color: #fff2d7;
+        background-color: #f2f9ff;
         width: 100vw;
         margin-left: calc(50% - 50vw);
         padding: 32px 0;
     }
 
     .content {
-        max-width: 1200px;
+        max-width: 800px;
         margin: 0 auto;
         padding: 0 32px;
     }
