@@ -3,11 +3,14 @@ import Layout from '../layouts/Layout.astro';
 import TOC from '../components/TOC.astro';
 import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
 import Secret_Sharing from '../components/mark/secret_sharing.mdx';
+
+// need to add this to all of the pages, and then also replace the page title in the layout woth the variable
+const pageTitle = 'Secret Sharing Schemes';
 ---
-<Layout title="Secret Sharing | ZK Proofs">
+<Layout title="Secret Sharing | ZK Proofs" pageTitle={pageTitle}>
     <div class="title-background">
         <Heading level="1" fz="4xl" fw="700" lh="xs" class="content">
-            Secret Sharing Schemes
+            {pageTitle}
         </Heading>
     </div>
 
@@ -53,12 +56,16 @@ import Secret_Sharing from '../components/mark/secret_sharing.mdx';
         font-size: 14px;
     }
 
-    .title-background {
+    /* .title-background {
         position: sticky;
         top: 0;
         z-index: 100;
         isolation: isolate;
         background: transparent;
+    } */
+    .title-background {
+        position: relative;
+        isolation: isolate;
     }
 
     .title-background::before {

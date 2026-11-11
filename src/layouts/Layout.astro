@@ -9,9 +9,10 @@ import { Stack, Wrapper } from 'lism-css/astro';
 interface Props {
   title: string;
   centerContent?: boolean;
+  pageTitle?: string;
 }
 
-const { title, centerContent = false } = Astro.props;
+const { title, centerContent = false, pageTitle = '' } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -36,7 +37,7 @@ const { title, centerContent = false } = Astro.props;
   </head>
 
   <Stack as="body" min-h="100dvh">
-    <Header />
+    <Header pageTitle={pageTitle} />
 
     <Stack
       as="main"
