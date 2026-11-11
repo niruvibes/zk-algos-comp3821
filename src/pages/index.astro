@@ -1,7 +1,7 @@
 ---
 import 'lism-css/full.css';
 import Header from '../components/Header.astro';
-import Intro from '../components/intro.astro';
+import Title from '../components/title.astro';
 import Conversation from '../components/conco.astro';
 
 import { Stack, Wrapper, Columns } from 'lism-css/astro';
@@ -9,7 +9,7 @@ import Layout from '../layouts/Layout.astro';
 ---
 <Layout title="ZK Proofs" centerContent>
   <Columns cols={[1, null, 2]} g="40" ai="center">
-    <Intro />
+    <Title />
     <Conversation />
   </Columns>
 </Layout>
