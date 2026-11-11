@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import TOC from '../components/TOC.astro';
 import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
 ---
-<Layout title="Introduction | ZK Proofs">
+<Layout title="Multi-Party Computation | ZK Proofs">
     <div class="title-background">
         <Heading level="1" fz="4xl" fw="700" lh="xs" class="content">
             Introduction to <br />
@@ -14,67 +14,6 @@ import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
     <Stack>        
         <div class="content-background">
             <Box class="content">
-                <Heading level="2" fz="3xl" fw="700" lh="xs">
-                    What is a Zero-Knowledge Proof?
-                </Heading>
-
-                <Text fz="m" c="text-1" lh="s">
-                    The fundamentals of zero knowledge proofs
-                </Text>
-
-                <Heading level="3" fz="2xl" fw="700" lh="xs" c="text-2">
-                    Properties
-                </Heading>
-
-                <ul class="list">
-                    <li><b>Zero-knowledge: </b>no brainer, it is in the name after all.
-                    Zero-knowledge means that the verifier knows the validity of
-                    the statement without knowing the contents of the statement itself.</li>
-                    <li>Cryptography</li>
-                    <li>Public-key encryption</li>
-                </ul>
-
-                <Heading level="2" fz="3xl" fw="700" lh="xs">
-                    The Process
-                </Heading>
-
-                <Text>
-                    Let Xavier be the verifier and Yasmina be the prover because we didn’t like Alice and Bob anyways.
-                </Text>
-
-                <ol class="steps">
-                    <li>Yasmina obtains the secret information which can be
-                    through her own means or provided by a third party.</li>
-                    <li>Xavier requests Yasmina proof that she has the secret information.</li>
-                    <li>Yasmina wants to fulfil Xavier’s request, however she
-                    wants to leak as little data as possible about the secret to
-                    him. So, she constructs a zero-knowledge proof and computes an algorithm.</li>
-                    <li>Yasmina responds to Xavier’s request with her completed zero-knowledge proof.</li>
-                    <li>Xavier uses Yasmina’s proof to verify that she has the correct information.</li>
-                </ol>
-
-                <Heading level="2" fz="3xl" fw="700" lh="xs">
-                    Interactive vs. Non-Interactive
-                </Heading>
-
-                <Text>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                    nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                    in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                    nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                    sunt in culpa qui officia deserunt mollit anim id est laborum.
-                </Text>
-
-                <Heading level="3" fz="2xl" fw="700" lh="xs" c="text-2">
-                    3-Colouring ZKP
-                </Heading>
-
-                <Heading level="3" fz="2xl" fw="700" lh="xs" c="text-2">
-                    Introduction to Fiat-Shamir
-                </Heading>
-
                 <!-- <label for="message">Ask a question</label>
                     <input
                     id="message"
