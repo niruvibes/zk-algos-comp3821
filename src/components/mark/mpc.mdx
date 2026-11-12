@@ -1,14 +1,52 @@
 # Multi-Party Computation
-Multi-Party Computation is a family of protocols whose aim is to carry out some computation, called a **functionality**
-$$$$
-b
+Multi-Party Computation (MPC) is a family of protocols whose aim is to let a collection of $n$ parties
+carry out some computation. Namely each party has some input $w_i$ which they would like to keep
+private, and have knowledge of public information $x$. Together they wish to compute
+some **functionality**
+<div style={{ textAlign: 'center' }}>
+$$f(w_1,\dots,w_n, x)$$
+</div>
+without revealing their private inputs.
 
-{/* Mention something on MPC based on other sharing schemes, e.g. Shamir and BGW */}
+These protocols consist of (possibly many) rounds of private computation, and communication between
+the parties, with the final result being the computation of the value of $f(w_1,\dots,w_n, x)$
+
+For the purpose of working towards MPC in the Head, we often consider the private inputs $w_i$ to be
+shares of some secret (or a collection of shares of several secrets). 
+<div style={{ textAlign: 'center' }}>
+$$w_i=([a]_i,[b]_i,\dots)$$
+</div>
+Lets take the example of MPC 
+protocols which work upon additive secret shares.
+- Other MPC protocols exist which work for other secret sharing schemes, for example 
+Ben-Or-Goldwasser-Widgerson (BGW) protocols are certain MPC protocols designed around Shamir secret
+shares.
+
+Also for simplicity lets assume the functionality $f$ can be broken down into several basic arithmetic
+operations.
 ## Linear operations
+### Addition of secrets and public values
+Given two secrets $a,b$ with a collection of shares $[a]_i,[b]_i$ which each party holds, notice that
+if each party can compute a valid secret sharing of the sum $a+b$ by adding the individual shares
+<div style={{ textAlign: 'center' }}>
+$$[a+b]_i=[a]_i+[b]_i$$
+</div>
+It is not hard to see that indeed
+<div style={{ textAlign: 'center' }}>
+$$\sum_i[a+b]_i=\sum_i[a]_i+\sum_i[b]_i=a+b$$
+</div>
 
-## Multiplication with Replicated Secret Sharing
-{/* Mention something on beaver triples */}
+Now to add a public constant $x_0$ to a secret $a$, one can either choose one party (say the first)
+to add $x_0$ to their share, or have all $n$ parties add $x_0\cdot n^{-1}$ to their share (where 
+$n^{-1}$ is the appropriate multiplicative inverse in $\mathbb Z/p\mathbb Z$).
 
+### Scaling by public values
+
+
+## Multiplication of secret values with Replicated Secret Sharing
+{/* Mention something on beaver triples as an alternative */}
+
+## Exponentiation of a secret with a public base
 
 # Multi-Party Computation in the Head
 
