@@ -39,14 +39,42 @@ $$\sum_i[a+b]_i=\sum_i[a]_i+\sum_i[b]_i=a+b$$
 Now to add a public constant $x_0$ to a secret $a$, one can either choose one party (say the first)
 to add $x_0$ to their share, or have all $n$ parties add $x_0\cdot n^{-1}$ to their share (where 
 $n^{-1}$ is the appropriate multiplicative inverse in $\mathbb Z/p\mathbb Z$).
+<div style={{ textAlign: 'center' }}>
+$$[a+x_0]_i=[a]_i+x_0\cdot n^{-1}$$
+</div>
+Both these operations require no communication rounds.
 
 ### Scaling by public values
-
+Multiplication of two secrets from their shares is typically a lot more difficult, however 
+multiplication of a secret $a$ by a public value $x_0$ just involves multiplying every
+share by $x_0$:
+<div style={{ textAlign: 'center' }}>
+$$[x_0\cdot a]_i=x_0\cdot [a]_i$$
+</div>
 
 ## Multiplication of secret values with Replicated Secret Sharing
 {/* Mention something on beaver triples as an alternative */}
+The difficulty of multiplication in additive secret sharing comes from the need to calculate
+all the products of the form $[a]_i[b]_j$:
+<div style={{ textAlign: 'center' }}>
+$$a\cdot b=\sum_{i,j}[a]_i[b]_j$$
+</div>
+There are several subprotocols to carry out the multiplication of two secrets from their
+shares. We will take a look at an example called **replicated secret sharing**.
+<br />
+A naive but evidently insecure version of this plays out as so; say we have five parties
+- Each party sends their share to $\text{ceil}(n/2)$ other parties (this step is obviously insecre!)
+<div style={{ textAlign: 'center' }}>
+$$\begin{matrix} \red{[a]_1[b]_1} & \red{[a]_1[b]_2} & \red{[a]_1[b]_3} & \blue{[a]_1[b]_4} & \purple{[a]_1[b]_5} \\ \red{[a]_2[b]_1} & \orange{[a]_2[b]_2} & \orange{[a]_2[b]_3} & \orange{[a]_2[b]_4} & \purple{[a]_2[b]_5} \\ \red{[a]_3[b]_1} & \orange{[a]_3[b]_2} & \green{[a]_3[b]_3} & \green{[a]_3[b]_4} & \green{[a]_3[b]_5} \\ \blue{[a]_4[b]_1} & \orange{[a]_4[b]_2} & \green{[a]_4[b]_3} & \blue{[a]_4[b]_4} & \blue{[a]_4[b]_5} \\ \purple{[a]_5[b]_1} & \purple{[a]_5[b]_2} & \green{[a]_5[b]_3} & \blue{[a]_5[b]_4} & \purple{[a]_5[b]_5} \\ \end{matrix}$$
+</div>
+- Each party then computes
 
 ## Exponentiation of a secret with a public base
 
 # Multi-Party Computation in the Head
+
+{/* 
+Bibliography to add:
+https://aly.fish/en/2025q4-cryptography/replicated-secret-sharing.pdf
+*/}
 
