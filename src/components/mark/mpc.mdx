@@ -62,16 +62,53 @@ $$a\cdot b=\sum_{i,j}[a]_i[b]_j$$
 There are several subprotocols to carry out the multiplication of two secrets from their
 shares. We will take a look at an example called **replicated secret sharing**.
 <br />
-A naive but evidently insecure version of this plays out as so; say we have five parties
-- Each party sends their share to $\text{ceil}(n/2)$ other parties (this step is obviously insecre!)
+A naive but evidently insecure version of this plays out as so; say we have five parties, which
+we colour code <span style={{ color:'red' }}>Alice (1)</span>,
+<span style={{ color:'orange' }}>Bob (2)</span>,
+<span style={{ color:'green' }}>Cole (3)</span>,
+<span style={{ color:'blue' }}>Dahlia (4)</span>,
+<span style={{ color:'purple' }}>Ellie (5)</span>,
+then each is tasked to compute the following products of their shares in this following manner:
 <div style={{ textAlign: 'center' }}>
 $$\begin{matrix} \red{[a]_1[b]_1} & \red{[a]_1[b]_2} & \red{[a]_1[b]_3} & \blue{[a]_1[b]_4} & \purple{[a]_1[b]_5} \\ \red{[a]_2[b]_1} & \orange{[a]_2[b]_2} & \orange{[a]_2[b]_3} & \orange{[a]_2[b]_4} & \purple{[a]_2[b]_5} \\ \red{[a]_3[b]_1} & \orange{[a]_3[b]_2} & \green{[a]_3[b]_3} & \green{[a]_3[b]_4} & \green{[a]_3[b]_5} \\ \blue{[a]_4[b]_1} & \orange{[a]_4[b]_2} & \green{[a]_4[b]_3} & \blue{[a]_4[b]_4} & \blue{[a]_4[b]_5} \\ \purple{[a]_5[b]_1} & \purple{[a]_5[b]_2} & \green{[a]_5[b]_3} & \blue{[a]_5[b]_4} & \purple{[a]_5[b]_5} \\ \end{matrix}$$
 </div>
-- Each party then computes
+- Each party sends their share to $\text{ceil}(n/2)$ other parties (this step is obviously insecre!). 
+For example, Dahlia sends her shares to Ellie and Alice.
+- Each party then computes their products, namely Alice recieves $\red{[a]_2,[b]_2,[a]_3,[b]_3}$. from Bob 
+and Cole, and calculates
+<div style={{ textAlign: 'center' }}>
+$$\red{[a\cdot b]_1=[a]_1[b]_1+[a]_2[b]_1+[a]_3[b]_1+[a]_1[b]_2+[a]_1[b]_3}.$$
+</div>
+Together, all parties would now have computed all the share products $[a]_i[b]_j$, and so their sum
+is equal to $a\cdot b$:
+<div style={{ textAlign: 'center' }}>
+$$a\cdot b=\sum_i [a\cdot b]_i.$$
+</div>
+Again for the goal of maintaining privacy of the other initial inputs, the original shares should not be 
+known by other parties. It is best if we have a way to randomly create a new set of shares which can be
+messaged to other people such that the original share is not known.
+
+### Key/secret resharing
+To create a new set of shares to the original, Each party performs their own additive secret sharing on 
+their share to split it into $n$ smaller shares:
+<div style={{ textAlign: 'center' }}>
+$$[a]_i=\sum_j [a]_{i,j}.$$
+</div>
+Each party sends the $j$th share to the $j$th party only, then each party takes their new set of shares
+<div style={{ textAlign: 'center' }}>
+$$[a]'_j=\sum_i [a]_{i,j}.$$
+</div>
+Evidently these new shares $[a]'_j$ all still add up to the original $a$
+<div style={{ textAlign: 'center' }}>
+$$\sum_j[a]'_j=\sum_j\sum_i [a]_{i,j}=\sum_i[a]_i=a.$$
+</div>
+The parties are now safe to message these new shares without revealing information about the old shares.
 
 ## Exponentiation of a secret with a public base
 
+
 # Multi-Party Computation in the Head
+
 
 {/* 
 Bibliography to add:
