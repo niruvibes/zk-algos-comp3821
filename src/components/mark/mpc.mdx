@@ -22,7 +22,9 @@ $$f(w_1,\dots,w_n, x)$$
 without revealing their private inputs.
 
 These protocols consist of (possibly many) rounds of private computation, and communication between
-the parties, with the final result being the computation of the value of $f(w_1,\dots,w_n, x)$
+the parties, with the final result being the computation of the value of $f(w_1,\dots,w_n, x)$.
+- The protocol is said to maintain privacy if the messages sent to a party does not reveal any
+information about other parties private inputs.
 
 For the purpose of working towards MPC in the Head, we often consider the private inputs $w_i$ to be
 shares of some secret (or a collection of shares of several secrets). 
@@ -130,7 +132,41 @@ difficult to reverse (in the sense that it takes an exceedingly long time to rev
 faster than polynomial time in the input). This leads to the following application of MPC.
 <br />
 # Multi-Party Computation in the Head
+MPC in the head (MPCitH) is a zero knowledge proof based on a multi-party computation. The prover would
+like to indicate to the verifier knowledge of some secret $x$ which when fed through some functionality 
+gives a target value $y$:
+<div style={{ textAlign: 'center' }}>
+$$F(x)=y$$
+</div>
+- This is typically chosen to be an $NP$ relation; where knowing $x$, verifying $y=F(x)$ takes a
+polynomial amount of time to the input size, but the task of finding a preimage $x$ knowing $y$ on
+average takes superpolynomial time. 
+- Common examples include hashing functions like SHA, or Posiedon. A simpler example is computing
+$y=z^x$ in some appropriate finite field for some publicly known $z$; the problem of finding the 
+image is the discrete logarithm problem which is known to be hard.
 
+To do this, the prover will split the secret $x$ into $n$ shares and simulate a multi-party 
+computation to compute $F(x)$ (hence the name MPC in the head).
+- The prover generates shares $[x]_i$ and then runs MPC in their head to compute $F(x)$ from the split
+of shares. While doing this, they collate **views** of each party $V_1,\dots V_n$. Each view $V_i$ 
+consists of the $i$th party's private input, records of their computations and records of messages sent 
+and recieved.
+- The prover sends commits of these views $\text{Com}(V_1,\dots,V_n)$ to the verifier.
+- The verifier requests for the prover to open $t$ of the parties views.
+- The prover opens those parties views and sends them to the verifier.
+- The verifier validates those views are consistent with the commits and that the computations are
+consistent with a valid MPC computation.
+- This process is repeated enough times to convince the verifier.
+<br />
+This proof of knowledge is zero knowledge if the MPC protocol is private, and the secret sharing
+scheme used is $t$-private where $t$ is the number of views which the verifier requests to open.
+
+Evidently it is also complete so long as the MPC protocol is correct.
+
+Soundness and proof of knowledge follows from the fact that a malicious prover which does not know $x$ 
+must fudge the computation of $F$, visible in one of the views, which the verifier can catch if they 
+open said view. Each repetition of this process makes the chance of the verifier missing this vanishingly 
+small.
 
 {/* 
 Bibliography to add:

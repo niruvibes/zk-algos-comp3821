@@ -48,7 +48,7 @@ export default function test({initialPrimeOrder, initialSecret}) {
 
             {shares !== null && (
                 <p style={{ fontSize: '1.5rem', fontWeight: 'bold', textAlign: 'center', marginTop: '1rem' }}>
-                {shares}
+                {shares[0]}
                 </p>
             )}
         </div>
