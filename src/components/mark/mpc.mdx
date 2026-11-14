@@ -1,3 +1,16 @@
+## Background
+The RSA cryptosystem is one of the oldest widely used system of cryptography algorithms used
+for secure data transmission. However concerns on the theoretical ability of quantum computers
+to factor large numbers in polynomial time, thereby breaking the security of RSA, led to the search 
+for alternative algorithms.
+<br />
+In 2017, the US National Institute of Standards and Technology launched the post-quantum cryptography 
+project, calling for submissions of various cryptographic algorithms which would be resistant to quantum
+attacks. While stronger and more efficient schemes would eventually be chosen for the standard, many of 
+the submitted algorithms (PICNIC, AIMer, Biscuit,...) used schemes based on multi-party computation in 
+the head, which we explore here.
+<br />
+
 # Multi-Party Computation
 Multi-Party Computation (MPC) is a family of protocols whose aim is to let a collection of $n$ parties
 carry out some computation. Namely each party has some input $w_i$ which they would like to keep
@@ -16,14 +29,17 @@ shares of some secret (or a collection of shares of several secrets).
 <div style={{ textAlign: 'center' }}>
 $$w_i=([a]_i,[b]_i,\dots)$$
 </div>
-Lets take the example of MPC 
-protocols which work upon additive secret shares.
+Lets take the example of MPC protocols which work upon additive secret shares over a prime order finite 
+field $\mathbb Z/p\mathbb Z$.
 - Other MPC protocols exist which work for other secret sharing schemes, for example 
 Ben-Or-Goldwasser-Widgerson (BGW) protocols are certain MPC protocols designed around Shamir secret
 shares.
+- Additionally many MPC protocols exist for computation of non-prime order finite fields, boolean values and 
+logical gates, matrix arithmetic and more.
 
 Also for simplicity lets assume the functionality $f$ can be broken down into several basic arithmetic
-operations.
+operations, exploring some methods for their computation.
+<br />
 ## Linear operations
 ### Addition of secrets and public values
 Given two secrets $a,b$ with a collection of shares $[a]_i,[b]_i$ which each party holds, notice that
@@ -43,7 +59,7 @@ $n^{-1}$ is the appropriate multiplicative inverse in $\mathbb Z/p\mathbb Z$).
 $$[a+x_0]_i=[a]_i+x_0\cdot n^{-1}$$
 </div>
 Both these operations require no communication rounds.
-
+<br />
 ### Scaling by public values
 Multiplication of two secrets from their shares is typically a lot more difficult, however 
 multiplication of a secret $a$ by a public value $x_0$ just involves multiplying every
@@ -51,7 +67,7 @@ share by $x_0$:
 <div style={{ textAlign: 'center' }}>
 $$[x_0\cdot a]_i=x_0\cdot [a]_i$$
 </div>
-
+<br />
 ## Multiplication of secret values with Replicated Secret Sharing
 {/* Mention something on beaver triples as an alternative */}
 The difficulty of multiplication in additive secret sharing comes from the need to calculate
@@ -60,7 +76,8 @@ all the products of the form $[a]_i[b]_j$:
 $$a\cdot b=\sum_{i,j}[a]_i[b]_j$$
 </div>
 There are several subprotocols to carry out the multiplication of two secrets from their
-shares. We will take a look at an example called **replicated secret sharing**.
+shares. We will take a look at an example called **replicated secret sharing**, though
+many alternatives with different tradoffs exist, for example Beaver triples.
 <br />
 A naive but evidently insecure version of this plays out as so; say we have five parties, which
 we colour code <span style={{ color:'red' }}>Alice (1)</span>,
@@ -87,7 +104,7 @@ $$a\cdot b=\sum_i [a\cdot b]_i.$$
 Again for the goal of maintaining privacy of the other initial inputs, the original shares should not be 
 known by other parties. It is best if we have a way to randomly create a new set of shares which can be
 messaged to other people such that the original share is not known.
-
+<br />
 ### Key/secret resharing
 To create a new set of shares to the original, Each party performs their own additive secret sharing on 
 their share to split it into $n$ smaller shares:
@@ -103,15 +120,21 @@ Evidently these new shares $[a]'_j$ all still add up to the original $a$
 $$\sum_j[a]'_j=\sum_j\sum_i [a]_{i,j}=\sum_i[a]_i=a.$$
 </div>
 The parties are now safe to message these new shares without revealing information about the old shares.
-
-## Exponentiation of a secret with a public base
-
-
+<br />
+Building blocks like the above can be found for other arithmetic operations, and also for operations 
+in other settings, such as private evaluation of logical gates for boolean values, or evaluation of
+matrix multiplications.
+<br />
+Such basic operations are the building blocks for complex functionalities which can be designed to be
+difficult to reverse (in the sense that it takes an exceedingly long time to reverse; e.g. asymptotically 
+faster than polynomial time in the input). This leads to the following application of MPC.
+<br />
 # Multi-Party Computation in the Head
 
 
 {/* 
 Bibliography to add:
 https://aly.fish/en/2025q4-cryptography/replicated-secret-sharing.pdf
+https://csrc.nist.gov/csrc/media/Projects/post-quantum-cryptography/documents/pqc-seminars/presentations/13-intro-mpc-in-the-head-05212024.pdf
 */}
 
