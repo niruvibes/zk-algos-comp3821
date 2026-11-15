@@ -25,11 +25,15 @@ These protocols consist of (possibly many) rounds of private computation, and co
 the parties, with the final result being the computation of the value of $f(w_1,\dots,w_n, x)$.
 - The protocol is said to maintain privacy if the messages sent to a party does not reveal any
 information about other parties private inputs.
-
+<br />
+    <div style={{ textAlign: 'center' }}>
+        <img src="/zk-algos-comp3821/MPC_diagram.png" />
+    </div>
+<br />
 For the purpose of working towards MPC in the Head, we often consider the private inputs $w_i$ to be
 shares of some secret (or a collection of shares of several secrets). 
 <div style={{ textAlign: 'center' }}>
-$$w_i=([a]_i,[b]_i,\dots)$$
+$$[w]_i=([a]_i,[b]_i,\dots)$$
 </div>
 Lets take the example of MPC protocols which work upon additive secret shares over a prime order finite 
 field $\mathbb Z/p\mathbb Z$.

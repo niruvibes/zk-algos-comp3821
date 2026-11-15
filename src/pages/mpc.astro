@@ -3,12 +3,13 @@ import Layout from '../layouts/Layout.astro';
 import TOC from '../components/TOC.astro';
 import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
 import MPC from '../components/mark/mpc.mdx'
+
+const pageTitle = 'Multi-Party Computation';
 ---
-<Layout title="Multi-Party Computation | ZK Proofs">
+<Layout title="Multi-Party Computation | ZK Proofs" pageTitle={pageTitle}>
     <div class="title-background">
         <Heading level="1" fz="4xl" fw="700" lh="xs" class="content">
-            Introduction to <br />
-            Zero-Knowledge Proofs
+            {pageTitle}
         </Heading>
     </div>
 
