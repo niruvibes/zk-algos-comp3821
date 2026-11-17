@@ -23,12 +23,16 @@ without revealing their private inputs.
 
 These protocols consist of (possibly many) rounds of private computation, and communication between
 the parties, with the final result being the computation of the value of $f(w_1,\dots,w_n, x)$.
+Specifically, on the $i$th round, the $k$th party performs a computation:
+- $\Pi_{k,i}(w_k, x,\text{prior messages recieved})=\text{next messages to send}$
+- Then sends out messages to the $l$th party $m_{k,l,i}$
+
 - The protocol is said to maintain privacy if the messages sent to a party does not reveal any
 information about other parties private inputs.
 <br />
-    <div style={{ textAlign: 'center' }}>
-        <img src="/zk-algos-comp3821/MPC_diagram.png" />
-    </div>
+<div style={{ textAlign: 'center' }}>
+    <img src="/zk-algos-comp3821/MPC_diagram.png" />
+</div>
 <br />
 For the purpose of working towards MPC in the Head, we often consider the private inputs $w_i$ to be
 shares of some secret (or a collection of shares of several secrets). 
@@ -136,6 +140,8 @@ difficult to reverse (in the sense that it takes an exceedingly long time to rev
 faster than polynomial time in the input). This leads to the following application of MPC.
 <br />
 # Multi-Party Computation in the Head
+Lets return to Xavier and Yasmina. Yasmina claims that she 
+
 MPC in the head (MPCitH) is a zero knowledge proof based on a multi-party computation. The prover would
 like to indicate to the verifier knowledge of some secret $x$ which when fed through some functionality 
 gives a target value $y$:
@@ -156,11 +162,15 @@ of shares. While doing this, they collate **views** of each party $V_1,\dots V_n
 consists of the $i$th party's private input, records of their computations and records of messages sent 
 and recieved.
 - The prover sends commits of these views $\text{Com}(V_1,\dots,V_n)$ to the verifier.
-- The verifier requests for the prover to open $t$ of the parties views.
-- The prover opens those parties views and sends them to the verifier.
+- The verifier requests for the prover to open $t$ of the parties views ${i_1,\dots, i_t}$.
+- The prover opens those parties views $\text{Com}(V_{i_1},\dots,V_{i_t})$ and sends them (and any auxiliary information to verify the commitment) to the verifier.
 - The verifier validates those views are consistent with the commits and that the computations are
 consistent with a valid MPC computation.
 - This process is repeated enough times to convince the verifier.
+<br />
+<div style={{ textAlign: 'center' }}>
+    <img src="/zk-algos-comp3821/MPCitH_diagram.png" />
+</div>
 <br />
 This proof of knowledge is zero knowledge if the MPC protocol is private, and the secret sharing
 scheme used is $t$-private where $t$ is the number of views which the verifier requests to open.

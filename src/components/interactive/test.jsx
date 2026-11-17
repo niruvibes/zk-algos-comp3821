@@ -13,13 +13,14 @@ export default function test({initialPrimeOrder, initialSecret}) {
         shares[1] = getRandom()
         shares[2] = getRandom()
         shares[3] = getRandom()
-        shares[4] = secret - shares[0] - shares[1] - shares[2] - shares[3]
+        shares[4] = (secret - shares[0] - shares[1] - shares[2] - shares[3]) % primeOrder
+        shares[4] = (shares[4] + primeOrder) % primeOrder
         setShares(shares)
     }
 
     return (
-        <div style={{ padding: '1.5rem', border: '1px solid #ccc', borderRadius: '8px', maxWidth: '320px' }}>
-            <h3>Secret Sharing Example</h3>
+        <div style={{ padding: '1.5rem', border: '1px solid #ccc', borderRadius: '8px', maxWidth: '720px' }}>
+            <h3>Additive Secret Sharing Generator</h3>
 
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
                 <label>
@@ -27,7 +28,7 @@ export default function test({initialPrimeOrder, initialSecret}) {
                 <input
                     type="number"
                     value={secret}
-                    onChange={(e) => setMin(e.target.value)}
+                    onChange={(e) => setSecret(e.target.value)}
                     style={{ width: '100%' }}
                 />
                 </label>
@@ -36,19 +37,19 @@ export default function test({initialPrimeOrder, initialSecret}) {
                 <input
                     type="number"
                     value={primeOrder}
-                    onChange={(e) => setMax(e.target.value)}
+                    onChange={(e) => setPrimeOrder(e.target.value)}
                     style={{ width: '100%' }}
                 />
                 </label>
             </div>
 
-            <button onClick={setShares} style={{ width: '100%', padding: '0.5rem', cursor: 'pointer' }}>
+            <button onClick={share} style={{ width: '100%', padding: '0.5rem', cursor: 'pointer' }}>
                 Generate
             </button>
 
             {shares !== null && (
-                <p style={{ fontSize: '1.5rem', fontWeight: 'bold', textAlign: 'center', marginTop: '1rem' }}>
-                {shares[0]}
+                <p style={{ fontSize: '1.25rem', fontWeight: 'bold', textAlign: 'center', marginTop: '1rem' }}>
+                {shares[0]} + {shares[1]} + {shares[2]} + {shares[3]} + {shares[4]} = {secret} mod {primeOrder}
                 </p>
             )}
         </div>
