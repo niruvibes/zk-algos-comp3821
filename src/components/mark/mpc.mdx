@@ -140,20 +140,48 @@ difficult to reverse (in the sense that it takes an exceedingly long time to rev
 faster than polynomial time in the input). This leads to the following application of MPC.
 <br />
 # Multi-Party Computation in the Head
-Lets return to Xavier and Yasmina. Yasmina claims that she 
-
-MPC in the head (MPCitH) is a zero knowledge proof based on a multi-party computation. The prover would
-like to indicate to the verifier knowledge of some secret $x$ which when fed through some functionality 
-gives a target value $y$:
+Lets return to Xavier and Yasmina, they are both interested in the discrete logarithm problem, that is
+given some numbers $b,y\in\mathbb Z/p\mathbb Z$ (for large prime $p$), what is the 
+$x\in (\mathbb Z/p\mathbb Z)^\times = \mathbb Z/(p-1)\mathbb Z$ such that
 <div style={{ textAlign: 'center' }}>
-$$F(x)=y$$
+$$F(x)=b^x\equiv y\quad\mod p.$$
 </div>
-- This is typically chosen to be an $NP$ relation; where knowing $x$, verifying $y=F(x)$ takes a
+Yasmina claims they found such a $x$, but would like to keep it a secret. To be able to prove to Xavier 
+that their $x$ satisfies $b^x\equiv y$, without revealing $x$, she decides to split $x$ into 128 
+additive shares $[x]_1,[x]_2,\dots,[x]_{128}$, and simulates the following multi-party computation:
+- Have 128 simulated parties take the exponentials $[b^x]_i=b^{[x]_i}$ privately,
+- Broadcast the values of $[b^x]_i$ to all the other parties,
+- Collect all the broadcasted values of $[b^x]_i$ and multiply them together to get $y=[b^x]_1\cdots[b^x]_{128}$.
+
+Yasmina then collates all the information each party gains at the end (say with a Merkle tree commit) into 
+collections called views and sends them to Xavier, claiming it is a computation of $b^x\equiv y$ split across 
+128 parties.
+
+They tell Xavier is allowed to opens whatever 127 of the 128 views of the computation that he likes to verify
+they did not cheat. Xavier happily obliges at these terms, noticing the chances of not catching Yasmina
+cheating are $\frac 1{128}$.
+
+Yasmina sends over the 127 views which Xavier chooses and the remaining data to reconstruct the original commit, 
+and Xavier checks that:
+- The opened views indeed correspond to the original commit,
+- The output of all the parties calculations is indeed the value of $y$,
+- There is no erroneous calculation or messaging done between parties which he can see.
+
+If Xavier wants to be even more sure Yasmina is not cheating, he could request Yasmina to redo this interaction 
+again, decreasing the chances of cheating without being caught exponentially.
+
+<br />
+The above procedure is an example of MPC in the head (MPCitH), a zero knowledge proof based on a multi-party 
+computation. The prover would like to indicate to the verifier knowledge of some secret $x$ which when fed 
+through some functionality gives a target value $y$:
+<div style={{ textAlign: 'center' }}>
+$$F(x)=y.$$
+</div>
+- This is typically chosen to be an $\mathsf{NP}$ relation; where knowing $x$, verifying $y=F(x)$ takes a
 polynomial amount of time to the input size, but the task of finding a preimage $x$ knowing $y$ on
 average takes superpolynomial time. 
-- Common examples include hashing functions like SHA, or Posiedon. A simpler example is computing
-$y=z^x$ in some appropriate finite field for some publicly known $z$; the problem of finding the 
-image is the discrete logarithm problem which is known to be hard.
+- Common examples include hashing functions like SHA, or Posiedon; or the discrete logarithm problem similar
+to our example, over a suitably 'difficult' group.
 
 To do this, the prover will split the secret $x$ into $n$ shares and simulate a multi-party 
 computation to compute $F(x)$ (hence the name MPC in the head).

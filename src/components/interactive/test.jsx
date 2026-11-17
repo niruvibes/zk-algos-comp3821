@@ -1,20 +1,20 @@
 import { useState } from 'react';
 
-export default function test({initialPrimeOrder, initialSecret}) {
-    const [primeOrder, setPrimeOrder] = useState(initialPrimeOrder)
+export default function test({initialOrder, initialSecret}) {
+    const [order, setOrder] = useState(initialOrder)
     const [secret, setSecret] = useState(initialSecret)
     const [shares, setShares] = useState(null);
 
     const share = () => {
-        const getRandom = () => Math.floor(Math.random() * primeOrder)
-        const result = Math.floor(Math.random() * primeOrder)
+        const getRandom = () => Math.floor(Math.random() * order)
+        const modwrap = (n) => ((n % order) + order) % order
+        const result = Math.floor(Math.random() * order)
         const shares = [0, 0, 0, 0, 0]
         shares[0] = getRandom()
         shares[1] = getRandom()
         shares[2] = getRandom()
         shares[3] = getRandom()
-        shares[4] = (secret - shares[0] - shares[1] - shares[2] - shares[3]) % primeOrder
-        shares[4] = (shares[4] + primeOrder) % primeOrder
+        shares[4] = modwrap(secret - shares[0] - shares[1] - shares[2] - shares[3])
         setShares(shares)
     }
 
@@ -28,16 +28,16 @@ export default function test({initialPrimeOrder, initialSecret}) {
                 <input
                     type="number"
                     value={secret}
-                    onChange={(e) => setSecret(e.target.value)}
+                    onChange={(e) => setSecret(Number(e.target.value))}
                     style={{ width: '100%' }}
                 />
                 </label>
                 <label>
-                Prime Field Order:
+                Ring modulus:
                 <input
                     type="number"
-                    value={primeOrder}
-                    onChange={(e) => setPrimeOrder(e.target.value)}
+                    value={order}
+                    onChange={(e) => setOrder(Number(e.target.value))}
                     style={{ width: '100%' }}
                 />
                 </label>
@@ -46,10 +46,24 @@ export default function test({initialPrimeOrder, initialSecret}) {
             <button onClick={share} style={{ width: '100%', padding: '0.5rem', cursor: 'pointer' }}>
                 Generate
             </button>
-
-            {shares !== null && (
+            {(shares == null) && (
                 <p style={{ fontSize: '1.25rem', fontWeight: 'bold', textAlign: 'center', marginTop: '1rem' }}>
-                {shares[0]} + {shares[1]} + {shares[2]} + {shares[3]} + {shares[4]} = {secret} mod {primeOrder}
+                Click the button above to generate shares!
+                </p>
+            )}
+            {(shares !== null && secret < order && secret >= 0) && (
+                <p style={{ fontSize: '1.25rem', fontWeight: 'bold', textAlign: 'center', marginTop: '1rem' }}>
+                {shares[0]} + {shares[1]} + {shares[2]} + {shares[3]} + {shares[4]} = {secret} mod {order}
+                </p>
+            )}
+            {(shares !== null && secret >= order) && (
+                <p style={{ fontSize: '1.25rem', fontWeight: 'bold', textAlign: 'center', marginTop: '1rem' }}>
+                secret must be between 0 and {order-1}
+                </p>
+            )}
+            {(shares !== null && order < 2) && (
+                <p style={{ fontSize: '1.25rem', fontWeight: 'bold', textAlign: 'center', marginTop: '1rem' }}>
+                order must be greater than 2
                 </p>
             )}
         </div>
