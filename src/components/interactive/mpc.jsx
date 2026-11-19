@@ -193,6 +193,9 @@ export default function App() {
 
   return (
     <section className={styles.demo} aria-label="Interactive secret resharing">
+      <header className={styles.toolbar}>
+          <h3 className={styles.title}>Additive Secret Resharing Demo</h3>
+      </header>
       <form className={styles.toolbar} onSubmit={submit}>
         <label className={styles.field}>
           Secret number

@@ -133,6 +133,9 @@ export default function Graph3Colouring() {
   return (
     <section className={styles.demo} aria-label="Interactive 3-colouring proof">
       <header className={styles.toolbar}>
+        <h3 className={styles.title}>Graph 3-colouring ZKP Demo</h3>
+      </header>
+      <header className={styles.toolbar}>
         <fieldset className={graphStyles.mode}>
           <legend>Yasmina’s strategy</legend>
           <label>

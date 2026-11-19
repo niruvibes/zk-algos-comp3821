@@ -152,6 +152,9 @@ export default function MerkleTree() {
 
   return (
     <section className={styles.demo} aria-label="Interactive Merkle tree">
+      <header className={styles.toolbar}>
+        <h3 className={styles.title}>Merkle Tree Commitment Scheme Demo</h3>
+      </header>
       <div className={styles.layout}>
         <div className={styles.board}>
           <p className={styles.boardLabel}>Four-leaf Merkle tree</p>

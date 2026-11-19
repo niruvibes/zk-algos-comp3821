@@ -1,6 +1,6 @@
 import MerkleTree from '../interactive/merkle_tree.jsx'
 
-## Background Story
+## Background and Motivation
 Say Xavier and Yasmina bought a raffle ticket together, and they had just won a copy of the new game Grand Tech Auto 6. 
 They are overjoyed, but unfortunately, only one of them can keep the copy.
 Xavier and Yasmina would normally flip a coin for this, however Yasmina is currently on holidays overseas, and so they resolve this over the phone.
@@ -8,8 +8,8 @@ Now since Xavier and Yasmina both really want the prize, they both can't trust e
 If one of the flips it, and another makes the call, how can they be sure that the person who flipped the coin didn't just change their mind and pretend the coin was something else?
 This is exactly the scenario where a commit scheme would be used.
 
-# Commitment Scheme Definition
-A commitment scheme are used to make some prover unable to change their secret message $m$ without immediately revealing them to the verifier. 
+# Commitment Schemes
+A **commitment scheme** is a collection of algorithms used to make some prover unable to change their secret message $m$ without immediately revealing them to the verifier. 
 More specifically, the prover will, with some random blinding factor $r$, create send the commit,
 <div style={{ textAlign: 'center' }}>
     $$c = \text{Commit}(m,r)$$ 
@@ -63,7 +63,11 @@ As $r$ is finite and hashing is deterministic, and verifier can brute force elim
 In the case of Xavier and Yasmina, then if they wish to do this coin flip, Xavier simply has to create the commit by hashing the string which is the message and the blinding factor concatenated together.
 This is a good scheme for Xavier and Yasmina's problem, but there are plenty of other types of commitment schemes to solve different types of problem.
 # Merkle Trees
-When there are vectors of data/messages, Merkle trees can be used. 
+<div style={{ textAlign: 'center' }}>
+    <img src="/zk-algos-comp3821/Merkle_diagram.png" />
+</div>
+<br />
+When there are vectors of data/messages, **Merkle trees** can be used. 
 If the normal hash commitment scheme was used as before, then this means that there would be one commit for every single message.
 Instead, Merkle Trees allow only one commit to be sent to the verifier instead of multiple.
 Each message is hashed (in ZKP with some blinding factor $r$), and then the continuously hashed pairwise upwards until there is a single root hash/commitment which is given to the verifier.

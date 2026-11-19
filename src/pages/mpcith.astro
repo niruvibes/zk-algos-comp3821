@@ -3,8 +3,10 @@ import Layout from '../layouts/Layout.astro';
 import TOC from '../components/TOC.astro';
 import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
 import MPCitH from '../components/mark/mpcith.mdx'
+
+const pageTitle = 'MPC in the Head';
 ---
-<Layout title="MPC in the Head | ZK Proofs">
+<Layout title="MPC in the Head | ZK Proofs" pageTitle={pageTitle}>
     <div class="title-background">
         <Heading level="1" fz="4xl" fw="700" lh="xs" class="content">
             MPC in the Head
