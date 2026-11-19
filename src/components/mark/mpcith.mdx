@@ -1,4 +1,4 @@
-# Multi-Party Computation in the Head
+# A Multi-Party Computation in the Head
 Lets return to Xavier and Yasmina, they are both interested in the discrete logarithm problem, that is
 given some numbers $b,y\in\mathbb Z/p\mathbb Z$ (for large prime $p$), what is the 
 $x\in (\mathbb Z/p\mathbb Z)^\times = \mathbb Z/(p-1)\mathbb Z$ such that
@@ -7,12 +7,12 @@ $$F(x)=b^x\equiv y\quad\mod p.$$
 </div>
 Yasmina claims they found such a $x$, but would like to keep it a secret. To be able to prove to Xavier 
 that their $x$ satisfies $b^x\equiv y$, without revealing $x$, she decides to split $x$ into 128 
-additive shares $[x]_1,[x]_2,\dots,[x]_{128}$, and simulates the following multi-party computation:
+<a href="share">additive shares</a> $[x]_1,[x]_2,\dots,[x]_{128}$, and simulates the following <a href="mpc">multi-party computation</a>:
 - Have 128 simulated parties take the exponentials $[b^x]_i=b^{[x]_i}$ privately,
 - Broadcast the values of $[b^x]_i$ to all the other parties,
 - Collect all the broadcasted values of $[b^x]_i$ and multiply them together to get $y=[b^x]_1\cdots[b^x]_{128}$.
 
-Yasmina then collates all the information each party gains at the end (say with a Merkle tree commit) into 
+Yasmina then collates all the information each party gains at the end (say with a <a href="commit">Merkle tree commit</a>) into 
 collections called views and sends them to Xavier, claiming it is a computation of $b^x\equiv y$ split across 
 128 parties.
 
@@ -30,7 +30,8 @@ If Xavier wants to be even more sure Yasmina is not cheating, he could request Y
 again, decreasing the chances of cheating without being caught exponentially.
 
 <br />
-The above procedure is an example of MPC in the head (MPCitH), a zero knowledge proof based on a multi-party 
+# General Definition for MPCitH
+The above procedure is an example of **MPC in the head** (MPCitH), a <a href="intro">zero knowledge proof</a> based on a multi-party 
 computation. The prover would like to indicate to the verifier knowledge of some secret $x$ which when fed 
 through some functionality gives a target value $y$:
 <div style={{ textAlign: 'center' }}>
@@ -69,11 +70,13 @@ must fudge the computation of $F$, visible in one of the views, which the verifi
 open said view. Each repetition of this process makes the chance of the verifier missing this vanishingly 
 small.
 
-# Fiat-Shamir Heuristic
+<br />
+<h1 id="fiat">Fiat-Shamir Heuristic</h1>
+
 The above ZKP is evidently interactive, but there is a way to convert the this into a non-interactive 
 ZKP, where the prover and verifier need no further interaction besides the verifier initially sending out 
 said proof of knowledge, and the prover checking the verifier's work. 
-
+<br />
 This method is called the **Fiat-Shamir transformation** (or the **Fiat-Shamir heuristic**). This transformation
 works for any ZKP which follows the following structure
 1. The prover generates some "random looking" commit which they reveal to the verifier.
@@ -81,7 +84,7 @@ works for any ZKP which follows the following structure
     - The fact that the verifier's role only involves issuing 'random' challenges is crucial for this 
     transformation to work. Such ZKPs which function like this are called public-coin.
 3. The prover computes the final proof based on the commitment and the challenge.
-
+<br />
 The heuristic works like this, say we had access to some **random oracle**:
 - That is a mathematical function which for a space of inputs, uniformly generates outputs in a 'random' manner.
 - In practice hashing functions are typically used as these oracles.
@@ -92,11 +95,11 @@ the prover instead feeds in all the relevant public information, and proof trans
 which will produce a seemingly random challenge for the verifier to respond to.
 In this way, the verifier uses the random oracle instead of a particlar prover, to create unpredictable
 challenges which the verifier then answers.
-
+<br />
 There are some nuances here, namely no mathematical function can truly be 'random', only very difficult to
 predict or back-calculate. It may possible, though difficult for the prover to forge a valid non-interactive proof
 transcript this way; a good Fiat-Shamir transformation makes this computationally infeasable to pull off.
-
+<br />
 As an analogy, this is like playing tennis with a particularly rugged training wall. The unpredictability of the
 bumps act similar to the suprising serves of a good opponent, and could demonstrate a player's test of skill.
 Such play can also be cheesed given good enough knowledge of the behaviour of bounces off the wall, so care
