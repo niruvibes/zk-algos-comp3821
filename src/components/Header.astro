@@ -3,46 +3,108 @@
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const { pageTitle = '' } = Astro.props;
+const lessonLinks = [
+  { path: 'intro', label: 'Zero Knowledge Proofs' },
+  { path: 'commit', label: 'Commitment Schemes' },
+  { path: 'share', label: 'Secret Sharing' },
+  { path: 'mpc', label: 'Multi-Party Computation' },
+  { path: 'mpcith', label: 'MPC in the Head' },
+];
 ---
 
-<header class="l--flex -ai:center -jc:between -px:40 -py:20 -bd:b">
+<header class="l--flex -ai:center -jc:between -g:10 -bd:b">
 	<a href={`${base}/`} class="-fz:m -fw:bold -td:none -c:text">
 		zk. <span class="-mis:5">How to prove nothing</span> <span id="nav-page-title" aria-hidden="true" style="opacity: 0"> · {pageTitle} </span>
 	</a>
 
-	<nav class="l--cluster -g:30 -fz:s -c:text-2">
-		<a href={`${base}/intro`} class="-td:none -c:inherit">Zero Knowledge Proofs</a>
-		<a href={`${base}/commit`} class="-td:none -c:inherit">Commitment Schemes</a>
-		<a href={`${base}/share`} class="-td:none -c:inherit">Secret Sharing</a>
-		<a href={`${base}/mpc`} class="-td:none -c:inherit">Multi-Party Computation</a>
-		<a href={`${base}/mpcith`} class="-td:none -c:inherit">MPC in the Head</a>
+	<nav aria-label="Lessons" class="l--cluster -g:30 -fz:s -c:text-2">
+		{lessonLinks.map(({ path, label }) => (
+			<a href={`${base}/${path}`} class="-td:none -c:inherit">{label}</a>
+		))}
 	</nav>
-  
+
+	<details>
+		<summary aria-label="Menu" class="l--flex -ai:center -jc:center -c:text -bd -bdrs:20">
+			<span aria-hidden="true" class="-fz:xl">☰</span>
+		</summary>
+		<nav aria-label="Lessons" class="l--stack -px:20 -py:10 -fz:s -c:text-2 -bd:b">
+			{lessonLinks.map(({ path, label }) => (
+				<a href={`${base}/${path}`} class="-py:15 -td:none -c:inherit">{label}</a>
+			))}
+		</nav>
+	</details>
 </header>
 
 <style>
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 200;
-    background: white;
-  }
-  #nav-page-title {
-    opacity: 0;
-    transition: opacity ease 0.2s;
+  @layer lism-custom {
+    header,
+    details > nav {
+      background-color: var(--white);
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      padding: var(--s20) var(--s40);
+    }
+
+    details {
+      display: none;
+    }
+
+    #nav-page-title {
+      opacity: 0;
+      transition: opacity ease 0.2s;
+    }
+
+    @media (width < 800px) {
+      header {
+        padding: var(--s10) var(--s20);
+      }
+
+      header > nav,
+      #nav-page-title {
+        display: none;
+      }
+
+      details {
+        display: block;
+      }
+
+      summary {
+        inline-size: var(--s45);
+        block-size: var(--s45);
+      }
+
+      summary::-webkit-details-marker {
+        display: none;
+      }
+
+      details > nav {
+        position: absolute;
+        inset-block-start: 100%;
+        inset-inline: 0;
+        max-block-size: calc(100dvh - var(--s45) - var(--s20));
+        overflow-y: auto;
+      }
+    }
   }
 </style>
 
 <script>
-  const title = document.querySelector('.title-background');
-  const label = document.querySelector<HTMLElement>('#nav-page-title')!;
-  const header = document.querySelector('header')!;
+  function updatePageTitle() {
+    const title = document.querySelector('.title-background');
+    const label = document.querySelector<HTMLElement>('#nav-page-title');
+    const header = label?.closest('header');
+    if (!title || !label || !header) return;
 
-  if (title) {
-    const update = () => {
-      label.style.opacity = (title.getBoundingClientRect().bottom > header.getBoundingClientRect().bottom) ? '0' : '1';
-    };
-    window.addEventListener('scroll', update, { passive: true });
-    update();
+    const titlePassedHeader = title.getBoundingClientRect().bottom <= header.getBoundingClientRect().bottom;
+    label.style.opacity = titlePassedHeader ? '1' : '0';
   }
+
+  document.addEventListener('astro:page-load', updatePageTitle);
+  window.addEventListener('scroll', updatePageTitle, { passive: true });
+  window.addEventListener('resize', updatePageTitle);
+  updatePageTitle();
 </script>
