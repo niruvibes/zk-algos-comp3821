@@ -112,6 +112,11 @@
   stroke-width: 4;
 }
 
+.edge[data-matching="true"] {
+  stroke: #a3342c;
+  stroke-dasharray: 5 4;
+}
+
 .vertex {
   fill: var(--paper);
   stroke: var(--vertex);
@@ -269,15 +274,15 @@
 }
 
 .vertex[data-colour="red"] {
-  fill: #ff3300;
+  fill: #d14040;
 }
 
 .vertex[data-colour="blue"] {
-  fill: #0080ff;
+  fill: #7aacdf;
 }
 
 .vertex[data-colour="green"] {
-  fill: #09ff00;
+  fill: #a2daa1;
 }
 
 .lock {
