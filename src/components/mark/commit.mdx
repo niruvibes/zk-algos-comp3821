@@ -1,3 +1,5 @@
+import MerkleTree from '../interactive/merkle_tree.jsx'
+
 ## Background Story
 Say Xavier and Yasmina bought a raffle ticket together, and they had just won a copy of the new game Grand Tech Auto 6. 
 They are overjoyed, but unfortunately, only one of them can keep the copy.
@@ -67,6 +69,8 @@ Instead, Merkle Trees allow only one commit to be sent to the verifier instead o
 Each message is hashed (in ZKP with some blinding factor $r$), and then the continuously hashed pairwise upwards until there is a single root hash/commitment which is given to the verifier.
 To open specific messages, the prover provides the target messages along with any other nodes (known as siblings hashes) required to construct the final root.
 This ensures the unrevealed messages stay hidden while only having to send one commit message to the verifier, which is useful for MPCitH ZKPs.
+
+<MerkleTree client:load />
 
 # Pedersen Commitment Scheme
 The Pedersen commitment scheme preserves algebraic structure to enable perfect hiding and relies on the discrete logarithm problem to make it computationally binding. 

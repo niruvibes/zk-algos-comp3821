@@ -5,6 +5,7 @@ import 'katex/dist/katex.min.css';
 
 import Header from '../components/Header.astro';
 import { Stack, Wrapper } from 'lism-css/astro';
+import { ClientRouter } from "astro:transitions";
 
 interface Props {
   title: string;
@@ -13,7 +14,10 @@ interface Props {
 }
 
 const { title, centerContent = false, pageTitle = '' } = Astro.props;
+
 ---
+
+<ClientRouter transition:animate="slide"/>
 
 <!DOCTYPE html>
 <html lang="en">
