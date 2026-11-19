@@ -1,18 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import TOC from '../components/TOC.astro';
-import Nico from '../components/mark/nico.mdx';
 import Secret_Sharing from '../components/mark/secret_sharing.mdx';
-import { WithSide, Box, Stack } from 'lism-css/astro';
+import { Stack } from 'lism-css/astro';
 ---
 
 <Layout title="Lessons | ZK Proofs">
-  <WithSide sideW="25%" mainW="s" g="40">
-    <Box as="aside" isSide>
-      <TOC />
-    </Box>
-
-    <Stack as="article" data-lesson g="30">
+  <Stack as="article" data-lesson g="30">
     <h2 id="zero-knowledge">Zero knowledge</h2>
     <p>1<br></p>
     <p>1<br></p>
@@ -46,5 +39,4 @@ import { WithSide, Box, Stack } from 'lism-css/astro';
 
     <Secret_Sharing />
   </Stack>
-  </WithSide>
 </Layout>

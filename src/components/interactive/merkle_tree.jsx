@@ -1,12 +1,12 @@
 import { Fragment, useState } from "react";
 import styles from "./demo.module.css";
-import merkleStyles from "./merkle_tree.module.css";
 
 const leafNames = ["A", "B", "C", "D"];
 const parentNames = ["A–B", "C–D"];
 const levels = [["Root"], parentNames, leafNames];
 const steps = ["Commit", "Open", "Verify"];
 const coinResults = ["Heads", "Tails"];
+const hashLength = 5;
 const encoder = new TextEncoder();
 
 async function hash(prefix, ...parts) {
@@ -17,11 +17,12 @@ async function hash(prefix, ...parts) {
     bytes.set(part, offset);
     offset += part.length;
   }
-  return new Uint8Array(await globalThis.crypto.subtle.digest("SHA-256", bytes));
+  const digest = await globalThis.crypto.subtle.digest("SHA-256", bytes);
+  return hex(new Uint8Array(digest)).slice(0, hashLength);
 }
 
 const hashLeaf = (message, salt) => hash(0, encoder.encode(message), salt);
-const hashParent = (left, right) => hash(1, left, right);
+const hashParent = (left, right) => hash(1, encoder.encode(left + right));
 
 function hex(bytes) {
   return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
@@ -55,10 +56,11 @@ function openLeaf(tree, index) {
 }
 
 async function recomputePath(message, { salt, siblings }) {
-  const path = [await hashLeaf(message, salt)];
+  const path = [{ digest: await hashLeaf(message, salt) }];
   for (const sibling of siblings) {
-    const child = path.at(-1);
-    path.push(await (sibling.left ? hashParent(sibling.hash, child) : hashParent(child, sibling.hash)));
+    const child = path.at(-1).digest;
+    const [left, right] = sibling.left ? [sibling.hash, child] : [child, sibling.hash];
+    path.push({ left, right, digest: await hashParent(left, right) });
   }
   return path;
 }
@@ -81,20 +83,55 @@ function MerkleDiagram({ tree, opening, path }) {
         const onPath = selected[level] === index;
         const sibling = level > 0 && opening && index === (selected[level] ^ 1);
         const digest = level === 0 ? tree?.root
-          : sibling ? opening.siblings[2 - level].hash : onPath ? path?.[2 - level] : undefined;
+          : sibling ? opening.siblings[2 - level].hash : onPath ? path?.[2 - level].digest : undefined;
         const width = level === 2 ? 72 : 94;
         const kind = sibling ? "sibling" : onPath ? "path" : undefined;
 
         return (
           <g key={label} transform={`translate(${xAt(level, index)} ${yAt(level)})`}>
-            <rect className={merkleStyles.node} data-kind={kind}
+            <rect className={styles.treeNode} data-kind={kind}
               x={-width / 2} y="-23" width={width} height="46" rx="8" />
             <text className={styles.vertexLabel} y={digest ? -8 : 0}>{label}</text>
-            {digest && <text className={merkleStyles.digest} y="11">{hex(digest).slice(0, 7)}…</text>}
+            {digest && <text className={styles.digest} y="11">{digest}</text>}
           </g>
         );
       }))}
     </svg>
+  );
+}
+
+function VerificationSteps({ opening, claim, path, root, matched }) {
+  return (
+    <section aria-label="Verification steps">
+      <h4 className={styles.title}>Verification steps</h4>
+      <p>For simplicity, each has is shortened to 5 characters.</p>
+      <ol className={styles.verificationSteps}>
+        <li>
+          <strong>Hash the claim for leaf {leafNames[opening.index]}</strong>
+          <p>
+            <code>0x00 ‖ UTF-8("{claim}") ‖ 0x{hex(opening.salt)}</code> → <code>{path[0].digest}</code>
+          </p>
+          <p>Where 0x00 marks it as a leaf node and the final string is the blinding factor</p>
+        </li>
+        {path.slice(1).map(({ left, right, digest }, index) => {
+          const sibling = opening.siblings[index];
+          const joined = left + right;
+          return (
+            <li key={sibling.name}>
+              <strong>Recompute the {index === 0 ? "parent" : "root"} hash</strong>
+              <p>Then we concatenate left and right, with sibling {sibling.name} on the {sibling.left ? "left" : "right"}.</p>
+              <p><code>"{left}" + "{right}"</code> → <code>{joined}</code></p>
+              <p>Hash <code>0x01 ‖ UTF-8("{joined}")</code> → <code>{digest}</code></p>
+              <p>Where 0x01 marks it as a parent node</p>
+            </li>
+          );
+        })}
+        <li>
+          <strong>Compare with the committed root</strong>
+          <p>Recomputed <code>{path.at(-1).digest}</code> {matched ? "=" : "≠"} committed <code>{root}</code>.</p>
+        </li>
+      </ol>
+    </section>
   );
 }
 
@@ -108,9 +145,8 @@ export default function MerkleTree() {
 
   const step = opening ? 2 : tree ? 1 : 0;
   const busy = pending !== null;
-  const root = tree && hex(tree.root);
-  const recomputedRoot = path && hex(path.at(-1));
-  const matched = recomputedRoot === root;
+  const root = tree?.root;
+  const matched = path !== null && path.at(-1).digest === root;
 
   async function commit() {
     setError("");
@@ -152,12 +188,15 @@ export default function MerkleTree() {
 
   return (
     <section className={styles.demo} aria-label="Interactive Merkle tree">
+      <header className={styles.toolbar}>
+        <h3 className={styles.title}>Merkle Tree Commitment Scheme Demo</h3>
+      </header>
       <div className={styles.layout}>
         <div className={styles.board}>
           <p className={styles.boardLabel}>Four-leaf Merkle tree</p>
           <MerkleDiagram tree={tree} opening={opening} path={path} />
           {opening && (
-            <ul className={merkleStyles.legend}>
+            <ul className={styles.legend}>
               <li><span data-kind="path" aria-hidden="true" />Path to recompute</li>
               <li><span data-kind="sibling" aria-hidden="true" />Sibling hashes supplied</li>
             </ul>
@@ -190,10 +229,10 @@ export default function MerkleTree() {
           {error && <p className={styles.outcome} data-accepted="false" role="alert">{error}</p>}
 
           {tree && (
-            <div className={merkleStyles.leafChoices} role="group" aria-label="Open a leaf">
+            <div className={styles.leafChoices} role="group" aria-label="Open a leaf">
               {leafNames.map((name, index) => (
                 <button type="button" key={name} aria-pressed={opening?.index === index}
-                  className={merkleStyles.leafButton} disabled={busy} onClick={() => open(index)}>
+                  className={styles.leafButton} disabled={busy} onClick={() => open(index)}>
                   Open {name}
                 </button>
               ))}
@@ -205,7 +244,7 @@ export default function MerkleTree() {
               <select value={claim} disabled={busy} onChange={(event) => { setClaim(event.target.value); setPath(null); }}>
                 {coinResults.map((result) => <option key={result}>{result}</option>)}
               </select>
-              <span className={merkleStyles.hint}>Change the result to try a tampered opening.</span>
+              <span className={styles.hint}>Change the result to see a tampered attempt.</span>
             </label>
           )}
 
@@ -224,20 +263,15 @@ export default function MerkleTree() {
 
       {tree && (
         <footer className={styles.footer}>
-          <dl className={merkleStyles.values}>
+          <dl className={styles.values}>
             <dt>Committed root</dt>
             <dd><code>{root}</code></dd>
-            {path && (
-              <>
-                <dt>Recomputed root</dt>
-                <dd><code>{recomputedRoot}</code></dd>
-              </>
-            )}
           </dl>
-          {opening && (
+          {path && <VerificationSteps opening={opening} claim={claim} path={path} root={root} matched={matched} />}
+          {/* {opening && (
             <details>
               <summary>Opening data for leaf {leafNames[opening.index]}</summary>
-              <dl className={merkleStyles.values}>
+              <dl className={styles.values}>
                 <dt>Opened result</dt>
                 <dd>{opening.message}</dd>
                 <dt>Blinding factor</dt>
@@ -245,12 +279,12 @@ export default function MerkleTree() {
                 {opening.siblings.map((sibling) => (
                   <Fragment key={sibling.name}>
                     <dt>{sibling.name} hash ({sibling.left ? "left" : "right"} sibling)</dt>
-                    <dd><code>{hex(sibling.hash)}</code></dd>
+                    <dd><code>{sibling.hash}</code></dd>
                   </Fragment>
                 ))}
               </dl>
             </details>
-          )}
+          )} */}
         </footer>
       )}
     </section>

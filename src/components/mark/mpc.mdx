@@ -1,11 +1,6 @@
 import Mpc from '../interactive/mpc.jsx'
 
-## Background
-<br />
-<Mpc client:load />
-<br />
-
-
+## Background and Motivation
 The RSA cryptosystem is one of the oldest widely used system of cryptography algorithms used
 for secure data transmission. However concerns on the theoretical ability of quantum computers
 to factor large numbers in polynomial time, thereby breaking the security of RSA, led to the search 
@@ -41,11 +36,11 @@ information about other parties private inputs.
     <img src="/zk-algos-comp3821/MPC_diagram.png" />
 </div>
 <br />
-For the purpose of working towards MPC in the Head, we often consider the private inputs $w_i$ to be
-shares of some secret (or a collection of shares of several secrets). 
+For the purpose of working towards <a href="mpcith">MPC in the Head</a>, we often consider the private inputs $w_i$ to be
+<a href="share">shares of some secret</a> (or a collection of shares of several secrets). 
 <div style={{ textAlign: 'center' }}>
 $$[w]_i=([a]_i,[b]_i,\dots)$$
-</div>
+</div> 
 Lets take the example of MPC protocols which work upon additive secret shares over a prime order finite 
 field $\mathbb Z/p\mathbb Z$.
 - Other MPC protocols exist which work for other secret sharing schemes, for example 
@@ -137,7 +132,9 @@ Evidently these new shares $[a]'_j$ all still add up to the original $a$
 $$\sum_j[a]'_j=\sum_j\sum_i [a]_{i,j}=\sum_i[a]_i=a.$$
 </div>
 The parties are now safe to message these new shares without revealing information about the old shares.
-<br />
+
+<Mpc client:load />
+
 Building blocks like the above can be found for other arithmetic operations, and also for operations 
 in other settings, such as private evaluation of logical gates for boolean values, or evaluation of
 matrix multiplications.
@@ -146,10 +143,11 @@ Such basic operations are the building blocks for complex functionalities which 
 difficult to reverse (in the sense that it takes an exceedingly long time to reverse; e.g. asymptotically 
 faster than polynomial time in the input). This leads to the following application of MPC.
 <br />
+### Further Reading
+🞂 https://aly.fish/en/2025q4-cryptography/replicated-secret-sharing.pdf
 
-{/* 
-Bibliography to add:
-https://aly.fish/en/2025q4-cryptography/replicated-secret-sharing.pdf
-https://csrc.nist.gov/csrc/media/Projects/post-quantum-cryptography/documents/pqc-seminars/presentations/13-intro-mpc-in-the-head-05212024.pdf
-*/}
+🞂 https://medium.com/partisia-blockchain/mpc-techniques-series-part-1-secret-sharing-d8f98324674a
 
+🞂 https://stoffelmpc.com/stoffel-blog/beaver-triples-tuples
+
+🞂 https://csrc.nist.gov/csrc/media/Projects/post-quantum-cryptography/documents/pqc-seminars/presentations/13-intro-mpc-in-the-head-05212024.pdf

@@ -1,6 +1,8 @@
 import { useId, useRef, useState } from "react";
 import styles from "./demo.module.css";
-import graphStyles from "./graph_3_colouring.module.css";
+import pkg from 'react-katex';
+
+const {InlineMath, BlockMath} = pkg;
 
 const vertices = {
   A: [180, 38],
@@ -20,11 +22,7 @@ const colourings = {
   cheating: { A: 0, B: 2, C: 2, D: 1, E: 2 },
 };
 
-const palette = [
-  { name: "Coral", fill: "#f8b7a7" },
-  { name: "Teal", fill: "#8cdbcb" },
-  { name: "Violet", fill: "#cfc2f2" },
-];
+const palette = ["red", "blue", "green"];
 
 const steps = ["Commit", "Challenge", "Open"];
 const actions = ["Commit colours", "Pick a random edge", "Open both endpoints"];
@@ -41,17 +39,24 @@ function randomIndex(length) {
 function permuteColours(colouring) {
   const available = [...palette];
   const permutation = palette.map(() => available.splice(randomIndex(available.length), 1)[0]);
+  return labelColouring(colouring, permutation);
+}
+
+function labelColouring(colouring, labels) {
   return Object.fromEntries(
-    Object.entries(colouring).map(([vertex, colour]) => [vertex, permutation[colour]]),
+    Object.entries(colouring).map(([vertex, colour]) => [vertex, labels[colour]]),
   );
 }
 
-function Graph({ round, canChallenge, onChallenge }) {
+function Graph({ round, proverColours, matchingEdges, canChallenge, onChallenge }) {
   const challenged = round?.edge;
+  const graphDescription = proverColours
+    ? `Prover’s colours. ${Object.entries(proverColours).map(([vertex, colour]) => `${vertex} is ${colour}`).join(", ")}.`
+    : "Public graph.";
 
   return (
     <svg className={styles.diagram} viewBox="0 0 360 270" role="img"
-      aria-label={`Public graph. Edges ${edges.map((edge) => edge.join(" to ")).join(", ")}.`}>
+      aria-label={`${graphDescription} Edges ${edges.map((edge) => edge.join(" to ")).join(", ")}.`}>
       {edges.map((edge) => {
         const [from, to] = edge;
         const [x1, y1] = vertices[from];
@@ -60,9 +65,10 @@ function Graph({ round, canChallenge, onChallenge }) {
         return (
           <g key={edge.join("")}>
             <line x1={x1} y1={y1} x2={x2} y2={y2}
-              className={`${styles.edge} ${graphStyles.edge}`} data-selected={edge === challenged} />
+              className={styles.edge} data-selected={edge === challenged}
+              data-matching={matchingEdges.includes(edge)} />
             {canChallenge && (
-              <line x1={x1} y1={y1} x2={x2} y2={y2} className={graphStyles.hitArea}
+              <line x1={x1} y1={y1} x2={x2} y2={y2} className={styles.hitArea}
                 onClick={() => onChallenge(edge)} />
             )}
           </g>
@@ -70,16 +76,16 @@ function Graph({ round, canChallenge, onChallenge }) {
       })}
       {Object.entries(vertices).map(([vertex, [x, y]]) => {
         const selected = challenged?.includes(vertex);
-        const colour = selected && round.opened ? round.colours[vertex] : null;
+        const colour = proverColours?.[vertex] ?? (selected && round.opened ? round.colours[vertex] : null);
         const locked = Boolean(round && !colour);
 
         return (
           <g key={vertex} transform={`translate(${x} ${y})`}>
             <circle r="23" className={styles.vertex} data-selected={Boolean(selected)}
-              fill={colour?.fill ?? (locked ? "#f2e8d6" : "#fffdf8")} />
+              data-locked={locked} data-colour={colour} />
             <text y={locked ? -5 : 1} className={styles.vertexLabel}>{vertex}</text>
             {locked && (
-              <g className={graphStyles.lock}>
+              <g className={styles.lock}>
                 <rect x="-4" y="6" width="8" height="6" rx="1" />
                 <path d="M-2.5 6 V4a2.5 2.5 0 0 1 5 0v2" />
               </g>
@@ -96,6 +102,7 @@ export default function Graph3Colouring() {
   const primaryAction = useRef(null);
   const [mode, setMode] = useState("honest");
   const [round, setRound] = useState(null);
+  const [showColours, setShowColours] = useState(false);
   const [results, setResults] = useState({ accepted: 0, rejected: 0 });
 
   const edge = round?.edge;
@@ -105,6 +112,8 @@ export default function Graph3Colouring() {
   const roundNumber = results.accepted + results.rejected + (opened ? 0 : 1);
   const revealed = opened ? edge.map((vertex) => round.colours[vertex]) : [];
   const accepted = opened && revealed[0] !== revealed[1];
+  const proverColours = showColours ? (round?.colours ?? labelColouring(colourings[mode], palette)) : null;
+  const matchingEdges = proverColours ? edges.filter(([from, to]) => proverColours[from] === proverColours[to]) : [];
 
   function reset() {
     setRound(null);
@@ -133,8 +142,8 @@ export default function Graph3Colouring() {
   return (
     <section className={styles.demo} aria-label="Interactive 3-colouring proof">
       <header className={styles.toolbar}>
-        <fieldset className={graphStyles.mode}>
-          <legend>Yasmina’s strategy</legend>
+        <fieldset className={styles.mode}>
+          <legend>Prover’s strategy</legend>
           <label>
             <input type="radio" name={modeName} checked={mode === "honest"}
               onChange={() => { setMode("honest"); reset(); }} />
@@ -153,8 +162,9 @@ export default function Graph3Colouring() {
 
       <div className={styles.layout}>
         <div className={styles.board}>
-          <p className={styles.boardLabel}>Public graph</p>
-          <Graph round={round} canChallenge={canChallenge} onChallenge={challenge} />
+          <p className={styles.boardLabel}>{showColours ? "Prover’s colours" : "Public graph"}</p>
+          <Graph round={round} proverColours={proverColours} matchingEdges={matchingEdges}
+            canChallenge={canChallenge} onChallenge={challenge} />
         </div>
 
         <div className={styles.controls}>
@@ -167,26 +177,43 @@ export default function Graph3Colouring() {
             ))}
           </ol>
 
-          <div className={graphStyles.status} role="status" aria-atomic="true">
-            {!round && <p>Yasmina shuffles the three colour labels and locks one colour behind each vertex.</p>}
-            {canChallenge && <p>All five colours are locked. As Xavier, challenge an edge by choosing it below or on the graph.</p>}
-            {edge && !opened && <p>Xavier challenged <strong>{edge.join("–")}</strong>. Yasmina opens only vertices {edge[0]} and {edge[1]}.</p>}
+          <div className={styles.status} role="status" aria-atomic="true">
+            {!round && <p>Prover shuffles the three colour labels and locks one colour behind each vertex.</p>}
+            {canChallenge && (
+              <p>
+                {!showColours && "All five colours are locked. "}
+                As the verifier, challenge an edge by choosing it below or on the graph.
+              </p>
+            )}
+            {edge && !opened && <p>Verifier challenged <strong>{edge.join("–")}</strong>. Prover opens only vertices {edge[0]} and {edge[1]}.</p>}
             {opened && (
               <div className={styles.outcome} data-accepted={accepted}>
                 <strong>{accepted ? "Round accepted" : "Round rejected"}</strong>
                 <p>
-                  {edge[0]} is {revealed[0].name.toLowerCase()} and {edge[1]} is {revealed[1].name.toLowerCase()}.
+                  {edge[0]} is {revealed[0]} and {edge[1]} is {revealed[1]}.
                   {" "}{accepted ? "The colours differ." : "The colours match."}
                 </p>
               </div>
             )}
+            {/* {showColours && (
+              <p>
+                {matchingEdges.length === 0
+                  ? "Every edge joins two different colours."
+                  : `Matching colours on ${matchingEdges.map((match) => match.join("–")).join(", ")}.`}
+              </p>
+            )} */}
           </div>
 
-          <button className={styles.primary} type="button" ref={primaryAction} onClick={advance}>
-            {opened ? "Commit for next round" : actions[step]}
-          </button>
+          <div className={styles.actions}>
+            <button className={styles.primary} type="button" ref={primaryAction} onClick={advance}>
+              {opened ? "Commit for next round" : actions[step]}
+            </button>
+            <button type="button" onClick={() => setShowColours((previous) => !previous)}>
+              {showColours ? "Hide colours" : "Reveal colours"}
+            </button>
+          </div>
           {canChallenge && (
-            <div className={graphStyles.edgeChoices} role="group" aria-label="Edges to challenge">
+            <div className={styles.edgeChoices} role="group" aria-label="Edges to challenge">
               {edges.map((choice) => (
                 <button type="button" key={choice.join("")}
                   aria-label={`Challenge edge ${choice.join(" to ")}`}
@@ -200,22 +227,27 @@ export default function Graph3Colouring() {
       </div>
 
       <footer className={styles.footer}>
-        <p className={graphStyles.score}>
+        <p className={styles.score}>
           <span><strong>{results.accepted}</strong> accepted</span>
           <span><strong>{results.rejected}</strong> rejected</span>
         </p>
         <details>
           <summary>Why repeat the proof?</summary>
           <p>
-            An honest prover passes every edge check. The cheating strategy here has one conflicting
-            edge out of seven. With independent random challenges, the chance that it passes all
-            {" "}<em>r</em> rounds is (6/7)<sup>r</sup>.
+            The proof may not be sufficient from checking once. There is a probability 
+            of at least <InlineMath math='\frac1{|E|}' /> of a dishonest prover getting caught where the verifier 
+            happens to choose an edge and vertices on both ends are the same colour. So there 
+            is a probability of at most <InlineMath math='1-\frac1{|E|}' /> that the prover manages to trick the 
+            verifier. To reduce this probability, repetition of this process is required, 
+            and if the verification occurs <InlineMath math='n|E|' /> times, the probability of error reduces to
           </p>
+          <BlockMath math='\left(1-\frac1{|E|}\right)^{n|E|}\approx e^{-n}.' />
+          <p>The probability decreases as the number of rounds increases.</p>
           <p>
             Each round starts with a fresh random permutation. On a valid colouring, that makes the
             two opened colours a uniformly random ordered pair of distinct colours, regardless of the secret
             colouring. The locks in this demo simulate cryptographic commitments.
-            In the real protocol, Xavier also verifies both openings against the original commitments.
+            In the real protocol, verifier also verifies both openings against the original commitments.
           </p>
         </details>
       </footer>

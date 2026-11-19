@@ -4,16 +4,22 @@ import '../styles/global.css';
 import 'katex/dist/katex.min.css';
 
 import Header from '../components/Header.astro';
-import { Stack, Wrapper } from 'lism-css/astro';
+import { Box, Heading, Stack, Wrapper } from 'lism-css/astro';
+import { ClientRouter } from "astro:transitions";
 
 interface Props {
   title: string;
   centerContent?: boolean;
   pageTitle?: string;
+  stickyTitle?: boolean;
 }
 
-const { title, centerContent = false, pageTitle = '' } = Astro.props;
+const { title, centerContent = false, pageTitle = '', stickyTitle = false } = Astro.props;
+const hasLessonTitle = Astro.slots.has('lesson-title');
+
 ---
+
+<ClientRouter transition:animate="slide"/>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -43,15 +49,38 @@ const { title, centerContent = false, pageTitle = '' } = Astro.props;
       as="main"
       isContainer
       fx="1"
+      bgc={hasLessonTitle ? 'white' : undefined}
       jc={centerContent ? 'center' : undefined}
     >
-      <Wrapper
-        contentSize="l"
-        px={['20', '40', '50']}
-        py={['40', '50']}
-      >
-        <slot />
-      </Wrapper>
+      {hasLessonTitle ? (
+        <>
+          <Wrapper
+            class="title-background"
+            contentSize="800px"
+            bgc="white"
+            mt={['40', '50']}
+            pos={stickyTitle ? 'sticky' : undefined}
+            t={stickyTitle ? '0' : undefined}
+            z={stickyTitle ? '100' : undefined}
+          >
+            <Heading level="1" fz="4xl" fw="700" lh="xs" px="32px">
+              <slot name="lesson-title" />
+            </Heading>
+          </Wrapper>
+
+          <Wrapper contentSize="800px" bgc="#f2f9ff" fx="1" py="32px">
+            <Box px="32px"><slot /></Box>
+          </Wrapper>
+        </>
+      ) : (
+        <Wrapper
+          contentSize="l"
+          px={['20', '40', '50']}
+          py={['40', '50']}
+        >
+          <slot />
+        </Wrapper>
+      )}
     </Stack>
   </Stack>
 </html>

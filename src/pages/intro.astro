@@ -1,101 +1,66 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import TOC from '../components/TOC.astro';
-import Coloring from '../components/interactive/graph_3_colouring.jsx';
-import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
 import Intro from '../components/mark/intro.mdx'
+import NonInteractive from '../components/mark/non_interactive.mdx'
 ---
 <Layout title="Introduction | ZK Proofs" pageTitle="Introduction">
-    <div class="title-background">
-        <Heading level="1" fz="4xl" fw="700" lh="xs" class="content">
-            Introduction to <br />
-            Zero-Knowledge Proofs
-        </Heading>
-    </div>
+    <Fragment slot="lesson-title">Introduction to <br />Zero-Knowledge Proofs</Fragment>
 
-    <Stack>        
-        <div class="content-background">
-            <Box class="content">
-                <Intro />
+    <Intro />
 
-                <Heading level="2" fz="3xl" fw="700" lh="xs">
-                    Interactive vs. Non-Interactive
-                </Heading>
+    <table>
+        <tr>
+            <th>Property</th>
+            <th>Interactive</th>
+            <th>Non-Interactive</th>
+        </tr>
+        <tr>
+            <th>Communication</th>
+            <td>Requires back-and-forth communication between the prover and verifier</td>
+            <td>Prover generates single proof that can be verified independently</td>
+        </tr>
+        <tr>
+            <th>Verifier Involvement</th>
+            <td>Active participation</td>
+            <td>No active participation</td>
+        </tr>
+        <tr>
+            <th>Risk of Collusion</th>
+            <td>Higher - verifier can collude with prover</td>
+            <td>Lower - verifier has no involvement in the proof generation</td>
+        </tr>
+        <tr>
+            <th>Proof of Generation Complexity</th>
+            <td>Higher - due to back-and-forth communication</td>
+            <td>Lower - avoids multiple rounds of communication</td>
+        </tr>
+        <tr>
+            <th>Vulnerability</th>
+            <td>Verifier’s secret values need to be stored securely</td>
+            <td>Verifier’s secret values are not involved</td>
+        </tr>
+        <tr>
+            <th>Typical Use Cases</th>
+            <td>Limited due to complexity and interaction requirement</td>
+            <td>Widely used in blockchain and cryptographic protocols for efficiency</td>
+        </tr>
+    </table>
+    <br />
 
-                <Text>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                    nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                    in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                    nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                    sunt in culpa qui officia deserunt mollit anim id est laborum.
-                </Text>
+    <NonInteractive />
 
-                <Heading id="3-color" level="3" fz="2xl" fw="700" lh="xs" c="text-2">
-                    3-Colouring ZKP
-                </Heading>
-
-                <Text>
-                    Yasmina claims she can colour the vertices of a public graph using three colours
-                    so that every edge joins two different colours. Play as Xavier and check her
-                    claim one edge at a time while keeping the full colouring hidden.
-                </Text>
-                <Coloring client:load />
-
-                <Heading level="3" fz="2xl" fw="700" lh="xs" c="text-2">
-                    Introduction to Fiat-Shamir
-                </Heading>
-
-                <!-- <label for="message">Ask a question</label>
-                    <input
-                    id="message"
-                    name="message"
-                    type="text"
-                    placeholder="Enter your question..."
-                /> -->
-            </Box>
-        </div>
-    </Stack>
+    <!-- <label for="message">Ask a question</label>
+        <input
+        id="message"
+        name="message"
+        type="text"
+        placeholder="Enter your question..."
+    /> -->
 </Layout>
 
 <style>
-    .content-background {
-        background-color: #f2f9ff;
-        width: 100vw;
-        margin-left: calc(50% - 50vw);
-        padding: 32px 0;
+    table, th, td {
+        border: 1px solid #00697b;
+        border-collapse: collapse;
     }
-    
-    .content {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 0 32px;
-    }
-
-    .title-background {
-        position: relative;
-        isolation: isolate;
-    }
-
-    .title-background::before {
-        content: "";
-        position: absolute;
-        z-index: -1;
-
-        top: 0;
-        bottom: 0;
-        left: 50%;
-
-        width: 100vw;
-        transform: translateX(-50%);
-
-        background-color: white;
-    }
-
-    .title-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 16px 32px;
-    }  
 </style>

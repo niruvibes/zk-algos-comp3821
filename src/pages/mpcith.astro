@@ -1,38 +1,16 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import TOC from '../components/TOC.astro';
-import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
+import MPCitH from '../components/mark/mpcith.mdx'
+
+const pageTitle = 'MPC in the Head';
 ---
-<Layout title="MPC in the Head | ZK Proofs">
-    <div class="title-background">
-        <Heading level="1" fz="4xl" fw="700" lh="xs" class="content">
-            MPC in the Head
-        </Heading>
-    </div>
+<Layout title="MPC in the Head | ZK Proofs" pageTitle={pageTitle} stickyTitle>
+    <Fragment slot="lesson-title">MPC in the Head</Fragment>
 
-    <Stack>        
-        <div class="content-background">
-            <Box class="content">
-
-            </Box>
-        </div>
-    </Stack>
+    <MPCitH />
 </Layout>
 
 <style>
-    .content-background {
-        background-color: #f2f9ff;
-        width: 100vw;
-        margin-left: calc(50% - 50vw);
-        padding: 32px 0;
-    }
-
-    .content {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 32px;
-    }
-
     .list {
         font-size: 16px;
         line-height: 2;
@@ -51,33 +29,4 @@ import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
         color: #444;
         font-size: 14px;
     }
-
-    .title-background {
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        isolation: isolate;
-        background: transparent;
-    }
-
-    .title-background::before {
-        content: "";
-        position: absolute;
-        z-index: -1;
-
-        top: 0;
-        bottom: 0;
-        left: 50%;
-
-        width: 100vw;
-        transform: translateX(-50%);
-
-        background-color: white;
-    }
-
-    .title-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 16px 32px;
-    }   
 </style>

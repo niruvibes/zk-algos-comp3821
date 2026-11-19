@@ -37,6 +37,7 @@ export default function additive_secret_sharing({initialOrder, initialSecret}) {
                         )}
                     </div>
                 </div>
+                {/*TODO lets make this into a table */}
 
                 <div className={styles.controls}>
                     <label className={styles.field}>
