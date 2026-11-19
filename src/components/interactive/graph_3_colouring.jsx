@@ -39,17 +39,24 @@ function randomIndex(length) {
 function permuteColours(colouring) {
   const available = [...palette];
   const permutation = palette.map(() => available.splice(randomIndex(available.length), 1)[0]);
+  return labelColouring(colouring, permutation);
+}
+
+function labelColouring(colouring, labels) {
   return Object.fromEntries(
-    Object.entries(colouring).map(([vertex, colour]) => [vertex, permutation[colour]]),
+    Object.entries(colouring).map(([vertex, colour]) => [vertex, labels[colour]]),
   );
 }
 
-function Graph({ round, canChallenge, onChallenge }) {
+function Graph({ round, proverColours, matchingEdges, canChallenge, onChallenge }) {
   const challenged = round?.edge;
+  const graphDescription = proverColours
+    ? `Prover’s colours. ${Object.entries(proverColours).map(([vertex, colour]) => `${vertex} is ${colour}`).join(", ")}.`
+    : "Public graph.";
 
   return (
     <svg className={styles.diagram} viewBox="0 0 360 270" role="img"
-      aria-label={`Public graph. Edges ${edges.map((edge) => edge.join(" to ")).join(", ")}.`}>
+      aria-label={`${graphDescription} Edges ${edges.map((edge) => edge.join(" to ")).join(", ")}.`}>
       {edges.map((edge) => {
         const [from, to] = edge;
         const [x1, y1] = vertices[from];
@@ -58,7 +65,8 @@ function Graph({ round, canChallenge, onChallenge }) {
         return (
           <g key={edge.join("")}>
             <line x1={x1} y1={y1} x2={x2} y2={y2}
-              className={styles.edge} data-selected={edge === challenged} />
+              className={styles.edge} data-selected={edge === challenged}
+              data-matching={matchingEdges.includes(edge)} />
             {canChallenge && (
               <line x1={x1} y1={y1} x2={x2} y2={y2} className={styles.hitArea}
                 onClick={() => onChallenge(edge)} />
@@ -68,7 +76,7 @@ function Graph({ round, canChallenge, onChallenge }) {
       })}
       {Object.entries(vertices).map(([vertex, [x, y]]) => {
         const selected = challenged?.includes(vertex);
-        const colour = selected && round.opened ? round.colours[vertex] : null;
+        const colour = proverColours?.[vertex] ?? (selected && round.opened ? round.colours[vertex] : null);
         const locked = Boolean(round && !colour);
 
         return (
@@ -94,6 +102,7 @@ export default function Graph3Colouring() {
   const primaryAction = useRef(null);
   const [mode, setMode] = useState("honest");
   const [round, setRound] = useState(null);
+  const [showColours, setShowColours] = useState(false);
   const [results, setResults] = useState({ accepted: 0, rejected: 0 });
 
   const edge = round?.edge;
@@ -103,6 +112,8 @@ export default function Graph3Colouring() {
   const roundNumber = results.accepted + results.rejected + (opened ? 0 : 1);
   const revealed = opened ? edge.map((vertex) => round.colours[vertex]) : [];
   const accepted = opened && revealed[0] !== revealed[1];
+  const proverColours = showColours ? (round?.colours ?? labelColouring(colourings[mode], palette)) : null;
+  const matchingEdges = proverColours ? edges.filter(([from, to]) => proverColours[from] === proverColours[to]) : [];
 
   function reset() {
     setRound(null);
@@ -151,8 +162,9 @@ export default function Graph3Colouring() {
 
       <div className={styles.layout}>
         <div className={styles.board}>
-          <p className={styles.boardLabel}>Public graph</p>
-          <Graph round={round} canChallenge={canChallenge} onChallenge={challenge} />
+          <p className={styles.boardLabel}>{showColours ? "Prover’s colours" : "Public graph"}</p>
+          <Graph round={round} proverColours={proverColours} matchingEdges={matchingEdges}
+            canChallenge={canChallenge} onChallenge={challenge} />
         </div>
 
         <div className={styles.controls}>
@@ -167,7 +179,12 @@ export default function Graph3Colouring() {
 
           <div className={styles.status} role="status" aria-atomic="true">
             {!round && <p>Prover shuffles the three colour labels and locks one colour behind each vertex.</p>}
-            {canChallenge && <p>All five colours are locked. As the verifier, challenge an edge by choosing it below or on the graph.</p>}
+            {canChallenge && (
+              <p>
+                {!showColours && "All five colours are locked. "}
+                As the verifier, challenge an edge by choosing it below or on the graph.
+              </p>
+            )}
             {edge && !opened && <p>Verifier challenged <strong>{edge.join("–")}</strong>. Prover opens only vertices {edge[0]} and {edge[1]}.</p>}
             {opened && (
               <div className={styles.outcome} data-accepted={accepted}>
@@ -178,11 +195,23 @@ export default function Graph3Colouring() {
                 </p>
               </div>
             )}
+            {/* {showColours && (
+              <p>
+                {matchingEdges.length === 0
+                  ? "Every edge joins two different colours."
+                  : `Matching colours on ${matchingEdges.map((match) => match.join("–")).join(", ")}.`}
+              </p>
+            )} */}
           </div>
 
-          <button className={styles.primary} type="button" ref={primaryAction} onClick={advance}>
-            {opened ? "Commit for next round" : actions[step]}
-          </button>
+          <div className={styles.actions}>
+            <button className={styles.primary} type="button" ref={primaryAction} onClick={advance}>
+              {opened ? "Commit for next round" : actions[step]}
+            </button>
+            <button type="button" onClick={() => setShowColours((previous) => !previous)}>
+              {showColours ? "Hide colours" : "Reveal colours"}
+            </button>
+          </div>
           {canChallenge && (
             <div className={styles.edgeChoices} role="group" aria-label="Edges to challenge">
               {edges.map((choice) => (

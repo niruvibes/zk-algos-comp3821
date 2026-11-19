@@ -69,8 +69,10 @@ Soundness and proof of knowledge follows from the fact that a malicious prover w
 must fudge the computation of $F$, visible in one of the views, which the verifier can catch if they 
 open said view. Each repetition of this process makes the chance of the verifier missing this vanishingly 
 small.
+
 <br />
-# Fiat-Shamir Heuristic
+<h1 id="fiat">Fiat-Shamir Heuristic</h1>
+
 The above ZKP is evidently interactive, but there is a way to convert the this into a non-interactive 
 ZKP, where the prover and verifier need no further interaction besides the verifier initially sending out 
 said proof of knowledge, and the prover checking the verifier's work. 

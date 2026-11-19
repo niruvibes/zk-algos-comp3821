@@ -104,14 +104,14 @@ function VerificationSteps({ opening, claim, path, root, matched }) {
   return (
     <section aria-label="Verification steps">
       <h4 className={styles.title}>Verification steps</h4>
-      <p>Each hash keeps the first {hashLength} hex characters of SHA-256. The ‖ symbol joins byte sequences.</p>
+      <p>For simplicity, each has is shortened to 5 characters.</p>
       <ol className={styles.verificationSteps}>
         <li>
           <strong>Hash the claim for leaf {leafNames[opening.index]}</strong>
           <p>
             <code>0x00 ‖ UTF-8("{claim}") ‖ 0x{hex(opening.salt)}</code> → <code>{path[0].digest}</code>
           </p>
-          <p>The final input is the blinding factor, shown in hex.</p>
+          <p>Where 0x00 marks it as a leaf node and the final string is the blinding factor</p>
         </li>
         {path.slice(1).map(({ left, right, digest }, index) => {
           const sibling = opening.siblings[index];
@@ -119,9 +119,10 @@ function VerificationSteps({ opening, claim, path, root, matched }) {
           return (
             <li key={sibling.name}>
               <strong>Recompute the {index === 0 ? "parent" : "root"} hash</strong>
-              <p>Concatenate left and right, with sibling {sibling.name} on the {sibling.left ? "left" : "right"}.</p>
+              <p>Then we concatenate left and right, with sibling {sibling.name} on the {sibling.left ? "left" : "right"}.</p>
               <p><code>"{left}" + "{right}"</code> → <code>{joined}</code></p>
               <p>Hash <code>0x01 ‖ UTF-8("{joined}")</code> → <code>{digest}</code></p>
+              <p>Where 0x01 marks it as a parent node</p>
             </li>
           );
         })}
@@ -243,7 +244,7 @@ export default function MerkleTree() {
               <select value={claim} disabled={busy} onChange={(event) => { setClaim(event.target.value); setPath(null); }}>
                 {coinResults.map((result) => <option key={result}>{result}</option>)}
               </select>
-              <span className={styles.hint}>Change the result to try a tampered opening.</span>
+              <span className={styles.hint}>Change the result to see a tampered attempt.</span>
             </label>
           )}
 
@@ -267,7 +268,7 @@ export default function MerkleTree() {
             <dd><code>{root}</code></dd>
           </dl>
           {path && <VerificationSteps opening={opening} claim={claim} path={path} root={root} matched={matched} />}
-          {opening && (
+          {/* {opening && (
             <details>
               <summary>Opening data for leaf {leafNames[opening.index]}</summary>
               <dl className={styles.values}>
@@ -283,7 +284,7 @@ export default function MerkleTree() {
                 ))}
               </dl>
             </details>
-          )}
+          )} */}
         </footer>
       )}
     </section>
