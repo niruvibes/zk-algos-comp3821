@@ -7,7 +7,7 @@ Xavier and Yasmina would normally flip a coin for this, however Yasmina is curre
 Now since Xavier and Yasmina both really want the prize, they both can't trust either eachother to flip the coin.
 If one of the flips it, and another makes the call, how can they be sure that the person who flipped the coin didn't just change their mind and pretend the coin was something else?
 This is exactly the scenario where a commit scheme would be used.
-
+<br />
 # Commitment Schemes
 A **commitment scheme** is a collection of algorithms used to make some prover unable to change their secret message $m$ without immediately revealing them to the verifier. 
 More specifically, the prover will, with some random blinding factor $r$, create send the commit,
@@ -53,6 +53,7 @@ In the context of zero knowledge proofs, usually prioritise perfectly hiding to 
 <br />
 
 Knowing this, Xavier and Yasmina now just has to choose a commit scheme to use. As such, consider a simple example of a scheme.
+<br />
 # Hash Commit Scheme
 In this scheme, the message $m$ can be concatanated with $r$, and then passed into the hashing function.
 This simple hash commitment where $c = H(m\parallel r)$ using a hash like SHA-256 or Poseidon, is both computationally hiding and binding.
@@ -62,6 +63,8 @@ As $r$ is finite and hashing is deterministic, and verifier can brute force elim
 
 In the case of Xavier and Yasmina, then if they wish to do this coin flip, Xavier simply has to create the commit by hashing the string which is the message and the blinding factor concatenated together.
 This is a good scheme for Xavier and Yasmina's problem, but there are plenty of other types of commitment schemes to solve different types of problem.
+<br />
+
 # Merkle Trees
 <div style={{ textAlign: 'center' }}>
     <img src="/zk-algos-comp3821/Merkle_diagram.png" />
