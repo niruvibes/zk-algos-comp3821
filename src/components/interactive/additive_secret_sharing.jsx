@@ -32,7 +32,7 @@ export default function additive_secret_sharing({initialOrder, initialSecret}) {
                             <p>Generate five shares to see how they add up modulo the prime field order.</p>
                         ) : (
                             <p className={styles.outcome}>
-                                {shares.join(' + ')} ≡ <strong>{secret}</strong> mod {primeOrder}
+                                {shares.join(' + ')} ≡ <strong>{secret}</strong> mod {order}
                             </p>
                         )}
                     </div>
@@ -46,8 +46,8 @@ export default function additive_secret_sharing({initialOrder, initialSecret}) {
                     </label>
                     <label className={styles.field}>
                         Prime field order
-                        <input type="number" value={primeOrder}
-                            onChange={(e) => setPrimeOrder(e.target.value)} />
+                        <input type="number" value={order}
+                            onChange={(e) => setOrder(Number(e.target.value))} />
                     </label>
                     <button className={styles.primary} type="button" onClick={share}>Generate</button>
                 </div>

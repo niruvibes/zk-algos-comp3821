@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import TOC from '../components/TOC.astro';
-import Graph3Colouring from '../components/interactive/graph_3_colouring.jsx';
+import Coloring from '../components/interactive/graph_3_colouring.jsx';
 import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
 import Intro from '../components/mark/intro.mdx'
 ---
@@ -41,8 +41,7 @@ import Intro from '../components/mark/intro.mdx'
                     so that every edge joins two different colours. Play as Xavier and check her
                     claim one edge at a time while keeping the full colouring hidden.
                 </Text>
-
-                <Graph3Colouring client:load />
+                <Coloring client:load />
 
                 <Heading level="3" fz="2xl" fw="700" lh="xs" c="text-2">
                     Introduction to Fiat-Shamir
