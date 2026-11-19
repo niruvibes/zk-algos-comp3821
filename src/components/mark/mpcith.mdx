@@ -7,12 +7,12 @@ $$F(x)=b^x\equiv y\quad\mod p.$$
 </div>
 Yasmina claims they found such a $x$, but would like to keep it a secret. To be able to prove to Xavier 
 that their $x$ satisfies $b^x\equiv y$, without revealing $x$, she decides to split $x$ into 128 
-additive shares $[x]_1,[x]_2,\dots,[x]_{128}$, and simulates the following multi-party computation:
+<a href="share">additive shares</a> $[x]_1,[x]_2,\dots,[x]_{128}$, and simulates the following <a href="mpc">multi-party computation</a>:
 - Have 128 simulated parties take the exponentials $[b^x]_i=b^{[x]_i}$ privately,
 - Broadcast the values of $[b^x]_i$ to all the other parties,
 - Collect all the broadcasted values of $[b^x]_i$ and multiply them together to get $y=[b^x]_1\cdots[b^x]_{128}$.
 
-Yasmina then collates all the information each party gains at the end (say with a Merkle tree commit) into 
+Yasmina then collates all the information each party gains at the end (say with a <a href="commit">Merkle tree commit</a>) into 
 collections called views and sends them to Xavier, claiming it is a computation of $b^x\equiv y$ split across 
 128 parties.
 
@@ -31,7 +31,7 @@ again, decreasing the chances of cheating without being caught exponentially.
 
 <br />
 # General Definition for MPCitH
-The above procedure is an example of **MPC in the head** (MPCitH), a zero knowledge proof based on a multi-party 
+The above procedure is an example of **MPC in the head** (MPCitH), a <a href="intro">zero knowledge proof</a> based on a multi-party 
 computation. The prover would like to indicate to the verifier knowledge of some secret $x$ which when fed 
 through some functionality gives a target value $y$:
 <div style={{ textAlign: 'center' }}>
