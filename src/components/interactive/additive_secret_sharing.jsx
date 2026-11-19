@@ -1,21 +1,20 @@
 import { useState } from 'react';
 import styles from './demo.module.css';
 
-export default function test({initialPrimeOrder, initialSecret}) {
-    const [primeOrder, setPrimeOrder] = useState(initialPrimeOrder)
+export default function additive_secret_sharing({initialOrder, initialSecret}) {
+    const [order, setOrder] = useState(initialOrder)
     const [secret, setSecret] = useState(initialSecret)
     const [shares, setShares] = useState(null);
 
     const share = () => {
-        const getRandom = () => Math.floor(Math.random() * primeOrder)
-        const result = Math.floor(Math.random() * primeOrder)
+        const getRandom = () => Math.floor(Math.random() * order)
+        const modwrap = (n) => ((n % order) + order) % order
         const shares = [0, 0, 0, 0, 0]
         shares[0] = getRandom()
         shares[1] = getRandom()
         shares[2] = getRandom()
         shares[3] = getRandom()
-        shares[4] = (secret - shares[0] - shares[1] - shares[2] - shares[3]) % primeOrder
-        shares[4] = (shares[4] + primeOrder) % primeOrder
+        shares[4] = modwrap(secret - shares[0] - shares[1] - shares[2] - shares[3])
         setShares(shares)
     }
 
