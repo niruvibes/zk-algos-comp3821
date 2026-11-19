@@ -1,8 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import TOC from '../components/TOC.astro';
-import Coloring from '../components/interactive/graph_3_colouring.jsx';
-import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
+import { Box, Stack, Heading } from 'lism-css/astro';
 import Intro from '../components/mark/intro.mdx'
 import NonInteractive from '../components/mark/non_interactive.mdx'
 ---
@@ -58,34 +56,7 @@ import NonInteractive from '../components/mark/non_interactive.mdx'
                 </table>
                 <br />
 
-<<<<<<< HEAD
-                <Text>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                    nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                    in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                    nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                    sunt in culpa qui officia deserunt mollit anim id est laborum.
-                </Text>
-
-                <Heading id="3-color" level="3" fz="2xl" fw="700" lh="xs" c="text-2">
-                    3-Colouring ZKP
-                </Heading>
-
-                <Text>
-                    Yasmina claims she can colour the vertices of a public graph using three colours
-                    so that every edge joins two different colours. Play as Xavier and check her
-                    claim one edge at a time while keeping the full colouring hidden.
-                </Text>
-                <Coloring client:load />
-
-                <Heading level="3" fz="2xl" fw="700" lh="xs" c="text-2">
-                    Introduction to Fiat-Shamir
-                </Heading>
-=======
                 <NonInteractive />
->>>>>>> chelsea
 
                 <!-- <label for="message">Ask a question</label>
                     <input

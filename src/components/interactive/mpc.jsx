@@ -1,6 +1,5 @@
 import { useId, useState } from "react";
 import styles from "./demo.module.css";
-import mpcStyles from "./mpc.module.css";
 
 const parties = ["P1", "P2", "P3", "P4", "P5"];
 const modulus = 101;
@@ -83,7 +82,7 @@ function Diagram({ messages, selected, onSelect }) {
       <defs>
         <marker id={arrowId} markerWidth="8" markerHeight="8"
           refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
-          <path d="M0 0 L8 4 L0 8 Z" className={mpcStyles.arrowhead} />
+          <path d="M0 0 L8 4 L0 8 Z" className={styles.arrowhead} />
         </marker>
       </defs>
 
@@ -106,9 +105,9 @@ function Diagram({ messages, selected, onSelect }) {
 
       {Object.entries(positions).map(([name, [x, y]]) => (
         <g key={name} transform={`translate(${x}, ${y})`}
-          className={onSelect && name !== "You" ? mpcStyles.party : undefined}
+          className={onSelect && name !== "You" ? styles.party : undefined}
           onClick={onSelect && name !== "You" ? () => onSelect(name) : undefined}>
-          <circle r="22" className={`${styles.vertex} ${mpcStyles.node}`}
+          <circle r="22" className={styles.vertex}
             data-selected={name === selected} />
           <text className={styles.vertexLabel}>{name}</text>
         </g>
@@ -119,7 +118,7 @@ function Diagram({ messages, selected, onSelect }) {
 
 function ShareTable({ label, shareLabel, shares, selected, received }) {
   return (
-    <table aria-label={label} className={mpcStyles.table}>
+    <table aria-label={label} className={styles.table}>
       <thead>
         <tr>
           <th scope="col">Party</th>
@@ -142,9 +141,9 @@ function ShareTable({ label, shareLabel, shares, selected, received }) {
 
 function PartsTable({ run, selected, sending }) {
   return (
-    <div className={mpcStyles.tableScroll}>
+    <div className={styles.tableScroll}>
       <table aria-label={sending ? "Where each part goes" : "Parts made from each share"}
-        className={mpcStyles.table}>
+        className={styles.table}>
         <thead>
           <tr>
             <th scope="col">{sending ? "Sender" : "Party"}</th>
@@ -212,7 +211,7 @@ export default function App() {
         </div>
 
         <div className={styles.controls}>
-          <ol className={`${styles.steps} ${mpcStyles.steps}`} aria-label="Protocol steps">
+          <ol className={`${styles.steps} ${styles.wrapSteps}`} aria-label="Protocol steps">
             {steps.map((item, index) => (
               <li key={item.id} aria-current={index === stepIndex ? "step" : undefined}>{item.label}</li>
             ))}

@@ -1,6 +1,5 @@
 import { useId, useRef, useState } from "react";
-import styles from "./graph_3_colouring.module.css";
-import 'katex/dist/katex.min.css';
+import styles from "./demo.module.css";
 import pkg from 'react-katex';
 
 const {InlineMath, BlockMath} = pkg;
@@ -23,11 +22,7 @@ const colourings = {
   cheating: { A: 0, B: 2, C: 2, D: 1, E: 2 },
 };
 
-const palette = [
-  { name: "Red", fill: "#ff3300" },
-  { name: "Blue", fill: "#0080ff" },
-  { name: "Green", fill: "#09ff00" },
-];
+const palette = ["red", "blue", "green"];
 
 const steps = ["Commit", "Challenge", "Open"];
 const actions = ["Commit colours", "Pick a random edge", "Open both endpoints"];
@@ -63,9 +58,9 @@ function Graph({ round, canChallenge, onChallenge }) {
         return (
           <g key={edge.join("")}>
             <line x1={x1} y1={y1} x2={x2} y2={y2}
-              className={`${styles.edge} ${graphStyles.edge}`} data-selected={edge === challenged} />
+              className={styles.edge} data-selected={edge === challenged} />
             {canChallenge && (
-              <line x1={x1} y1={y1} x2={x2} y2={y2} className={graphStyles.hitArea}
+              <line x1={x1} y1={y1} x2={x2} y2={y2} className={styles.hitArea}
                 onClick={() => onChallenge(edge)} />
             )}
           </g>
@@ -79,10 +74,10 @@ function Graph({ round, canChallenge, onChallenge }) {
         return (
           <g key={vertex} transform={`translate(${x} ${y})`}>
             <circle r="23" className={styles.vertex} data-selected={Boolean(selected)}
-              fill={colour?.fill ?? (locked ? "#eff1f4" : "#f8fcff")} />
+              data-locked={locked} data-colour={colour} />
             <text y={locked ? -5 : 1} className={styles.vertexLabel}>{vertex}</text>
             {locked && (
-              <g className={graphStyles.lock}>
+              <g className={styles.lock}>
                 <rect x="-4" y="6" width="8" height="6" rx="1" />
                 <path d="M-2.5 6 V4a2.5 2.5 0 0 1 5 0v2" />
               </g>
@@ -178,7 +173,7 @@ export default function Graph3Colouring() {
               <div className={styles.outcome} data-accepted={accepted}>
                 <strong>{accepted ? "Round accepted" : "Round rejected"}</strong>
                 <p>
-                  {edge[0]} is {revealed[0].name.toLowerCase()} and {edge[1]} is {revealed[1].name.toLowerCase()}.
+                  {edge[0]} is {revealed[0]} and {edge[1]} is {revealed[1]}.
                   {" "}{accepted ? "The colours differ." : "The colours match."}
                 </p>
               </div>
@@ -189,7 +184,7 @@ export default function Graph3Colouring() {
             {opened ? "Commit for next round" : actions[step]}
           </button>
           {canChallenge && (
-            <div className={graphStyles.edgeChoices} role="group" aria-label="Edges to challenge">
+            <div className={styles.edgeChoices} role="group" aria-label="Edges to challenge">
               {edges.map((choice) => (
                 <button type="button" key={choice.join("")}
                   aria-label={`Challenge edge ${choice.join(" to ")}`}
@@ -203,7 +198,7 @@ export default function Graph3Colouring() {
       </div>
 
       <footer className={styles.footer}>
-        <p className={graphStyles.score}>
+        <p className={styles.score}>
           <span><strong>{results.accepted}</strong> accepted</span>
           <span><strong>{results.rejected}</strong> rejected</span>
         </p>
@@ -215,10 +210,10 @@ export default function Graph3Colouring() {
             happens to choose an edge and vertices on both ends are the same colour. So there 
             is a probability of at most <InlineMath math='1-\frac1{|E|}' /> that the prover manages to trick the 
             verifier. To reduce this probability, repetition of this process is required, 
-            and if the verification occurs <InlineMath math='n|E|' /> times, the probability of error reduces to 
-            <BlockMath math='\left(1-\frac1{|E|}\right)^{n|E|}\approx e^{-n},' />
-            which becomes more negligible as repetition increases.
+            and if the verification occurs <InlineMath math='n|E|' /> times, the probability of error reduces to
           </p>
+          <BlockMath math='\left(1-\frac1{|E|}\right)^{n|E|}\approx e^{-n}.' />
+          <p>The probability decreases as the number of rounds increases.</p>
           <p>
             Each round starts with a fresh random permutation. On a valid colouring, that makes the
             two opened colours a uniformly random ordered pair of distinct colours, regardless of the secret
