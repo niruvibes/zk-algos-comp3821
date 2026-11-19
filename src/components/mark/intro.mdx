@@ -1,0 +1,45 @@
+import Coloring from '../interactive/graph_3_colouring.jsx'
+
+<Coloring client:load />
+
+# What is a Zero-Knowledge Proof?
+Let’s say you want to have access to sensitive data, like your banking details, 
+but in order for the bank to grant you access they require a proof of 
+identity from you, like a passport for example. This raises privacy and security 
+concerns as personal identifiable information (PII) is also sensitive and should 
+not be casually given out. 
+<br />
+With this issue, the concept of zero-knowledge proof (ZKP) was introduced and was 
+a breakthrough in applied cryptography as it promised to improve security of 
+information by removing the need to reveal information in order to prove that a 
+claim is valid. ZKPs involve a prover and a verifier. The prover has a witness, 
+the secret information that they claim to have, which is your PII in this case.
+<br /> 
+The aim for the prover is to convince the verifier that they have the witness 
+without actually revealing the information itself (or while revealing as few 
+details as possible). So by using a ZKP, you can now prove your identity without the 
+need to provide your PII!
+<br />
+
+## Properties
+All zero-knowledge proofs must have the following three characteristics:
+- <b>Zero-knowledge:</b> no brainer, it is in the name after all. Zero-knowledge means 
+that the verifier knows the validity of the statement without knowing the contents of the statement itself.
+- <b>Proof of knowledge:</b> The prover must know the
+witness, otherwise it is impossible for them to form
+a proof with the correct logic
+- <b>Completeness:</b> if the statement is true, then the verifier can trust that the prover has knowledge.
+- <b>Soundness:</b> if the prover is dishonest, they cannot trick the verifier into believing their statement.
+<br />
+
+## The Process
+Let Xavier be the verifier and Yasmina be the prover because we didn’t like Alice and Bob anyways.
+1. Yasmina obtains the secret information which can be through her own means or provided by a third party.
+2. Xavier requests Yasmina proof that she has the secret information.
+3. Yasmina wants to fulfil Xavier’s request, however she wants to leak as little data as possible about the secret to him. So, she constructs a zero-knowledge proof and computes an algorithm.
+4. Yasmina responds to Xavier’s request with her completed zero-knowledge proof.
+5. Xavier uses Yasmina’s proof to verify that she has the correct information.
+<br />
+
+# Interactive vs. Non-Interactive ZKPs
+## Graph 3-Colouring ZKP
