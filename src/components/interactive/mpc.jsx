@@ -1,13 +1,15 @@
 import { useId, useState } from "react";
+import styles from "./demo.module.css";
+import mpcStyles from "./mpc.module.css";
 
 const parties = ["P1", "P2", "P3", "P4", "P5"];
 const modulus = 101;
 const steps = [
-  { id: "share", title: "Share the secret" },
-  { id: "split", title: "Split each share into five parts", action: "Split each share" },
-  { id: "send", title: "Send the parts to each party", action: "Send the parts" },
-  { id: "combine", title: "Combine the received parts", action: "Combine the parts" },
-  { id: "reconstruct", title: "Reconstruct the secret", action: "Reconstruct secret" },
+  { id: "share", label: "Share", title: "Share the secret" },
+  { id: "split", label: "Split", title: "Split each share into five parts", action: "Split each share" },
+  { id: "send", label: "Send", title: "Send the parts to each party", action: "Send the parts" },
+  { id: "combine", label: "Combine", title: "Combine the received parts", action: "Combine the parts" },
+  { id: "reconstruct", label: "Reconstruct", title: "Reconstruct the secret", action: "Reconstruct secret" },
 ];
 
 function sum(values) {
@@ -76,12 +78,12 @@ function Diagram({ messages, selected, onSelect }) {
   const arrowId = useId();
 
   return (
-    <svg viewBox="0 0 410 260" width="100%" style={{ maxWidth: 600 }}
+    <svg className={styles.diagram} viewBox="0 0 410 260" role="img"
       aria-label="Share transfers among you and the five parties">
       <defs>
         <marker id={arrowId} markerWidth="8" markerHeight="8"
-          refX="8" refY="4" orient="auto">
-          <path d="M0 0 L8 4 L0 8 Z" fill="#64748b" />
+          refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+          <path d="M0 0 L8 4 L0 8 Z" className={mpcStyles.arrowhead} />
         </marker>
       </defs>
 
@@ -96,7 +98,7 @@ function Diagram({ messages, selected, onSelect }) {
           <line key={`${from}-${to}`} x1={x1} y1={y1}
             x2={x2 - 24 * dx / length}
             y2={y2 - 24 * dy / length}
-            stroke="#64748b" markerEnd={`url(#${arrowId})`}>
+            className={styles.edge} markerEnd={`url(#${arrowId})`}>
             <title>{`${from} → ${to}: ${label}`}</title>
           </line>
         );
@@ -104,9 +106,11 @@ function Diagram({ messages, selected, onSelect }) {
 
       {Object.entries(positions).map(([name, [x, y]]) => (
         <g key={name} transform={`translate(${x}, ${y})`}
-          onClick={() => name !== "You" && onSelect(name)}>
-          <circle r="22" fill={name === selected ? "#a5b4fc" : "#eef2ff"} />
-          <text textAnchor="middle" dominantBaseline="central">{name}</text>
+          className={onSelect && name !== "You" ? mpcStyles.party : undefined}
+          onClick={onSelect && name !== "You" ? () => onSelect(name) : undefined}>
+          <circle r="22" className={`${styles.vertex} ${mpcStyles.node}`}
+            data-selected={name === selected} />
+          <text className={styles.vertexLabel}>{name}</text>
         </g>
       ))}
     </svg>
@@ -115,8 +119,7 @@ function Diagram({ messages, selected, onSelect }) {
 
 function ShareTable({ label, shareLabel, shares, selected, received }) {
   return (
-    <table aria-label={label}
-      style={{ width: "100%", maxWidth: received ? 540 : 320, textAlign: "left", marginBlockEnd: "1rem" }}>
+    <table aria-label={label} className={mpcStyles.table}>
       <thead>
         <tr>
           <th scope="col">Party</th>
@@ -126,7 +129,7 @@ function ShareTable({ label, shareLabel, shares, selected, received }) {
       </thead>
       <tbody>
         {parties.map((party, index) => (
-          <tr key={party} style={{ backgroundColor: party === selected ? "#eef2ff" : undefined }}>
+          <tr key={party} data-selected={party === selected}>
             <th scope="row">{party}</th>
             {received && <td>{received[index].join(" + ")}</td>}
             <td>{shares[index]}</td>
@@ -139,9 +142,9 @@ function ShareTable({ label, shareLabel, shares, selected, received }) {
 
 function PartsTable({ run, selected, sending }) {
   return (
-    <div style={{ overflowX: "auto", marginBlockEnd: "1rem" }}>
+    <div className={mpcStyles.tableScroll}>
       <table aria-label={sending ? "Where each part goes" : "Parts made from each share"}
-        style={{ width: "100%", minWidth: 400, textAlign: "left" }}>
+        className={mpcStyles.table}>
         <thead>
           <tr>
             <th scope="col">{sending ? "Sender" : "Party"}</th>
@@ -153,8 +156,7 @@ function PartsTable({ run, selected, sending }) {
         </thead>
         <tbody>
           {run.parts.map((partsForParty, sender) => (
-            <tr key={parties[sender]}
-              style={{ backgroundColor: parties[sender] === selected ? "#eef2ff" : undefined }}>
+            <tr key={parties[sender]} data-selected={parties[sender] === selected}>
               <th scope="row">{parties[sender]}</th>
               {!sending && <td>{run.shares[sender]}</td>}
               {partsForParty.map((part, recipient) => (
@@ -190,21 +192,76 @@ export default function App() {
   }
 
   return (
-    <main>
-      <form onSubmit={submit} style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-        <label>
-          Secret number{" "}
+    <section className={styles.demo} aria-label="Interactive secret resharing">
+      <form className={styles.toolbar} onSubmit={submit}>
+        <label className={styles.field}>
+          Secret number
           <input name="secret" type="number" min="0" max={modulus - 1} defaultValue={67} required />
         </label>
-        <button type="submit">Split and send</button>
+        <button className={styles.primary} type="submit">Split and send</button>
       </form>
 
-      {run && (
-        <section>
-          <h3>{step.title}</h3>
-          <Diagram messages={getMessages(run, step.id, selectedIndex)}
-            selected={selected} onSelect={setSelected} />
+      <div className={styles.layout}>
+        <div className={styles.board}>
+          <p className={styles.boardLabel}>Share transfers</p>
+          <Diagram messages={run ? getMessages(run, step.id, selectedIndex) : []}
+            selected={run ? selected : undefined} onSelect={run ? setSelected : undefined} />
+        </div>
 
+        <div className={styles.controls}>
+          <ol className={`${styles.steps} ${mpcStyles.steps}`} aria-label="Protocol steps">
+            {steps.map((item, index) => (
+              <li key={item.id} aria-current={index === stepIndex ? "step" : undefined}>{item.label}</li>
+            ))}
+          </ol>
+          <h3 className={styles.title}>{step.title}</h3>
+
+          {run ? (
+            <>
+              <label className={styles.field}>
+                Inspect party
+                <select value={selected} onChange={(event) => setSelected(event.target.value)}>
+                  {parties.map((party) => <option key={party}>{party}</option>)}
+                </select>
+              </label>
+              {step.id === "share" && <p>{selected} receives the share {run.shares[selectedIndex]}.</p>}
+              {step.id === "split" && (
+                <p>{selected} splits {run.shares[selectedIndex]} into {run.parts[selectedIndex].join(" + ")} modulo {modulus}.</p>
+              )}
+              {step.id === "send" && (
+                <p>The arrows show where {selected} sends its parts. Each party keeps the part addressed to itself.</p>
+              )}
+              {step.id === "combine" && (
+                <p>{selected} adds its own kept part and the four parts received from the other parties. The remainder modulo {modulus} is its new share.</p>
+              )}
+              {step.id === "reconstruct" && (
+                <div className={styles.outcome} role="status">
+                  <p>Add the returned shares and take the remainder modulo {modulus}.</p>
+                  <p>{run.newShares.join(" + ")} = {sum(run.newShares)}</p>
+                  <p>Reconstructed secret <strong>{mod(sum(run.newShares))}</strong></p>
+                </div>
+              )}
+
+              <div className={styles.actions}>
+                {stepIndex > 0 && (
+                  <button type="button" onClick={() => setStepIndex(stepIndex - 1)}>Back</button>
+                )}
+                {nextStep && (
+                  <button className={styles.primary} type="button" onClick={() => setStepIndex(stepIndex + 1)}>
+                    {nextStep.action}
+                  </button>
+                )}
+                <button type="button" onClick={() => startRun(run.secret)}>Reshare</button>
+              </div>
+            </>
+          ) : (
+            <p>Enter a secret number from 0 to {modulus - 1} to split it into five shares.</p>
+          )}
+        </div>
+      </div>
+
+      {run && (
+        <footer className={styles.footer}>
           {step.id === "share" && (
             <ShareTable label="Shares received by each party" shareLabel="Share received"
               shares={run.shares} selected={selected} />
@@ -221,43 +278,8 @@ export default function App() {
               shares={run.newShares} selected={selected} />
           )}
 
-          <label>
-            Inspect party{" "}
-            <select value={selected} onChange={(event) => setSelected(event.target.value)}>
-              {parties.map((party) => <option key={party}>{party}</option>)}
-            </select>
-          </label>
-          {step.id === "share" && <p>{selected} receives the share {run.shares[selectedIndex]}.</p>}
-          {step.id === "split" && (
-            <p>{selected} splits {run.shares[selectedIndex]} into {run.parts[selectedIndex].join(" + ")} modulo {modulus}.</p>
-          )}
-          {step.id === "send" && (
-            <p>The arrows show where {selected} sends its parts. Each party keeps the part addressed to itself.</p>
-          )}
-          {step.id === "combine" && (
-            <p>{selected} adds its own kept part and the four parts received from the other parties. The remainder modulo {modulus} is its new share.</p>
-          )}
-          {step.id === "reconstruct" && (
-            <>
-              <p>Add the returned shares and take the remainder modulo {modulus}.</p>
-              <p>{run.newShares.join(" + ")} = {sum(run.newShares)}</p>
-              <p role="status">Reconstructed secret: <strong>{mod(sum(run.newShares))}</strong></p>
-            </>
-          )}
-
-          {stepIndex > 0 && (
-            <>
-              <button onClick={() => setStepIndex(stepIndex - 1)}>Back</button>{" "}
-            </>
-          )}
-          {nextStep && (
-            <>
-              <button onClick={() => setStepIndex(stepIndex + 1)}>{nextStep.action}</button>{" "}
-            </>
-          )}
-          <button onClick={() => startRun(run.secret)}>Reshare</button>
-        </section>
+        </footer>
       )}
-    </main>
+    </section>
   );
 }

@@ -1,5 +1,6 @@
 import { useId, useRef, useState } from "react";
-import styles from "./graph_3_colouring.module.css";
+import styles from "./demo.module.css";
+import graphStyles from "./graph_3_colouring.module.css";
 
 const vertices = {
   A: [180, 38],
@@ -49,7 +50,7 @@ function Graph({ round, canChallenge, onChallenge }) {
   const challenged = round?.edge;
 
   return (
-    <svg className={styles.graph} viewBox="0 0 360 270" role="img"
+    <svg className={styles.diagram} viewBox="0 0 360 270" role="img"
       aria-label={`Public graph. Edges ${edges.map((edge) => edge.join(" to ")).join(", ")}.`}>
       {edges.map((edge) => {
         const [from, to] = edge;
@@ -59,9 +60,9 @@ function Graph({ round, canChallenge, onChallenge }) {
         return (
           <g key={edge.join("")}>
             <line x1={x1} y1={y1} x2={x2} y2={y2}
-              className={styles.edge} data-selected={edge === challenged} />
+              className={`${styles.edge} ${graphStyles.edge}`} data-selected={edge === challenged} />
             {canChallenge && (
-              <line x1={x1} y1={y1} x2={x2} y2={y2} className={styles.hitArea}
+              <line x1={x1} y1={y1} x2={x2} y2={y2} className={graphStyles.hitArea}
                 onClick={() => onChallenge(edge)} />
             )}
           </g>
@@ -78,7 +79,7 @@ function Graph({ round, canChallenge, onChallenge }) {
               fill={colour?.fill ?? (locked ? "#f2e8d6" : "#fffdf8")} />
             <text y={locked ? -5 : 1} className={styles.vertexLabel}>{vertex}</text>
             {locked && (
-              <g className={styles.lock}>
+              <g className={graphStyles.lock}>
                 <rect x="-4" y="6" width="8" height="6" rx="1" />
                 <path d="M-2.5 6 V4a2.5 2.5 0 0 1 5 0v2" />
               </g>
@@ -132,7 +133,7 @@ export default function Graph3Colouring() {
   return (
     <section className={styles.demo} aria-label="Interactive 3-colouring proof">
       <header className={styles.toolbar}>
-        <fieldset className={styles.mode}>
+        <fieldset className={graphStyles.mode}>
           <legend>Yasmina’s strategy</legend>
           <label>
             <input type="radio" name={modeName} checked={mode === "honest"}
@@ -166,7 +167,7 @@ export default function Graph3Colouring() {
             ))}
           </ol>
 
-          <div className={styles.status} role="status" aria-atomic="true">
+          <div className={graphStyles.status} role="status" aria-atomic="true">
             {!round && <p>Yasmina shuffles the three colour labels and locks one colour behind each vertex.</p>}
             {canChallenge && <p>All five colours are locked. As Xavier, challenge an edge by choosing it below or on the graph.</p>}
             {edge && !opened && <p>Xavier challenged <strong>{edge.join("–")}</strong>. Yasmina opens only vertices {edge[0]} and {edge[1]}.</p>}
@@ -185,7 +186,7 @@ export default function Graph3Colouring() {
             {opened ? "Commit for next round" : actions[step]}
           </button>
           {canChallenge && (
-            <div className={styles.edgeChoices} role="group" aria-label="Edges to challenge">
+            <div className={graphStyles.edgeChoices} role="group" aria-label="Edges to challenge">
               {edges.map((choice) => (
                 <button type="button" key={choice.join("")}
                   aria-label={`Challenge edge ${choice.join(" to ")}`}
@@ -199,7 +200,7 @@ export default function Graph3Colouring() {
       </div>
 
       <footer className={styles.footer}>
-        <p className={styles.score}>
+        <p className={graphStyles.score}>
           <span><strong>{results.accepted}</strong> accepted</span>
           <span><strong>{results.rejected}</strong> rejected</span>
         </p>
