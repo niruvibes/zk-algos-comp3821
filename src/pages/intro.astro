@@ -1,9 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import TOC from '../components/TOC.astro';
+<<<<<<< HEAD
 import Coloring from '../components/interactive/graph_3_colouring.jsx';
+=======
+>>>>>>> chelsea
 import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
 import Intro from '../components/mark/intro.mdx'
+import NonInteractive from '../components/mark/non_interactive.mdx'
 ---
 <Layout title="Introduction | ZK Proofs" pageTitle="Introduction">
     <div class="title-background">
@@ -18,10 +22,46 @@ import Intro from '../components/mark/intro.mdx'
             <Box class="content">
                 <Intro />
 
-                <Heading level="2" fz="3xl" fw="700" lh="xs">
-                    Interactive vs. Non-Interactive
-                </Heading>
+                <table>
+                    <tr>
+                        <th>Property</th>
+                        <th>Interactive</th>
+                        <th>Non-Interactive</th>
+                    </tr>
+                    <tr>
+                        <th>Communication</th>
+                        <td>Requires back-and-forth communication between the prover and verifier</td>
+                        <td>Prover generates single proof that can be verified independently</td>
+                    </tr>
+                    <tr>
+                        <th>Verifier Involvement</th>
+                        <td>Active participation</td>
+                        <td>No active participation</td>
+                    </tr>
+                    <tr>
+                        <th>Risk of Collusion</th>
+                        <td>Higher - verifier can collude with prover</td>
+                        <td>Lower - verifier has no involvement in the proof generation</td>
+                    </tr>
+                    <tr>
+                        <th>Proof of Generation Complexity</th>
+                        <td>Higher - due to back-and-forth communication</td>
+                        <td>Lower - avoids multiple rounds of communication</td>
+                    </tr>
+                    <tr>
+                        <th>Vulnerability</th>
+                        <td>Verifier’s secret values need to be stored securely</td>
+                        <td>Verifier’s secret values are not involved</td>
+                    </tr>
+                    <tr>
+                        <th>Typical Use Cases</th>
+                        <td>Limited due to complexity and interaction requirement</td>
+                        <td>Widely used in blockchain and cryptographic protocols for efficiency</td>
+                    </tr>
+                </table>
+                <br />
 
+<<<<<<< HEAD
                 <Text>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
                     do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -46,6 +86,9 @@ import Intro from '../components/mark/intro.mdx'
                 <Heading level="3" fz="2xl" fw="700" lh="xs" c="text-2">
                     Introduction to Fiat-Shamir
                 </Heading>
+=======
+                <NonInteractive />
+>>>>>>> chelsea
 
                 <!-- <label for="message">Ask a question</label>
                     <input
@@ -98,4 +141,9 @@ import Intro from '../components/mark/intro.mdx'
         margin: 0 auto;
         padding: 16px 32px;
     }  
+
+    table, th, td {
+        border: 1px solid #00697b;
+        border-collapse: collapse;
+    }
 </style>

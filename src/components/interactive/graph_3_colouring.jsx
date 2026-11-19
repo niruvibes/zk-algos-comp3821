@@ -1,6 +1,9 @@
 import { useId, useRef, useState } from "react";
-import styles from "./demo.module.css";
-import graphStyles from "./graph_3_colouring.module.css";
+import styles from "./graph_3_colouring.module.css";
+import 'katex/dist/katex.min.css';
+import pkg from 'react-katex';
+
+const {InlineMath, BlockMath} = pkg;
 
 const vertices = {
   A: [180, 38],
@@ -21,9 +24,9 @@ const colourings = {
 };
 
 const palette = [
-  { name: "Coral", fill: "#f8b7a7" },
-  { name: "Teal", fill: "#8cdbcb" },
-  { name: "Violet", fill: "#cfc2f2" },
+  { name: "Red", fill: "#ff3300" },
+  { name: "Blue", fill: "#0080ff" },
+  { name: "Green", fill: "#09ff00" },
 ];
 
 const steps = ["Commit", "Challenge", "Open"];
@@ -76,7 +79,7 @@ function Graph({ round, canChallenge, onChallenge }) {
         return (
           <g key={vertex} transform={`translate(${x} ${y})`}>
             <circle r="23" className={styles.vertex} data-selected={Boolean(selected)}
-              fill={colour?.fill ?? (locked ? "#f2e8d6" : "#fffdf8")} />
+              fill={colour?.fill ?? (locked ? "#eff1f4" : "#f8fcff")} />
             <text y={locked ? -5 : 1} className={styles.vertexLabel}>{vertex}</text>
             {locked && (
               <g className={graphStyles.lock}>
@@ -133,11 +136,8 @@ export default function Graph3Colouring() {
   return (
     <section className={styles.demo} aria-label="Interactive 3-colouring proof">
       <header className={styles.toolbar}>
-        <h3 className={styles.title}>Graph 3-colouring ZKP Demo</h3>
-      </header>
-      <header className={styles.toolbar}>
-        <fieldset className={graphStyles.mode}>
-          <legend>Yasmina’s strategy</legend>
+        <fieldset className={styles.mode}>
+          <legend>Prover’s strategy</legend>
           <label>
             <input type="radio" name={modeName} checked={mode === "honest"}
               onChange={() => { setMode("honest"); reset(); }} />
@@ -170,10 +170,10 @@ export default function Graph3Colouring() {
             ))}
           </ol>
 
-          <div className={graphStyles.status} role="status" aria-atomic="true">
-            {!round && <p>Yasmina shuffles the three colour labels and locks one colour behind each vertex.</p>}
-            {canChallenge && <p>All five colours are locked. As Xavier, challenge an edge by choosing it below or on the graph.</p>}
-            {edge && !opened && <p>Xavier challenged <strong>{edge.join("–")}</strong>. Yasmina opens only vertices {edge[0]} and {edge[1]}.</p>}
+          <div className={styles.status} role="status" aria-atomic="true">
+            {!round && <p>Prover shuffles the three colour labels and locks one colour behind each vertex.</p>}
+            {canChallenge && <p>All five colours are locked. As the verifier, challenge an edge by choosing it below or on the graph.</p>}
+            {edge && !opened && <p>Verifier challenged <strong>{edge.join("–")}</strong>. Prover opens only vertices {edge[0]} and {edge[1]}.</p>}
             {opened && (
               <div className={styles.outcome} data-accepted={accepted}>
                 <strong>{accepted ? "Round accepted" : "Round rejected"}</strong>
@@ -210,15 +210,20 @@ export default function Graph3Colouring() {
         <details>
           <summary>Why repeat the proof?</summary>
           <p>
-            An honest prover passes every edge check. The cheating strategy here has one conflicting
-            edge out of seven. With independent random challenges, the chance that it passes all
-            {" "}<em>r</em> rounds is (6/7)<sup>r</sup>.
+            The proof may not be sufficient from checking once. There is a probability 
+            of at least <InlineMath math='\frac1{|E|}' /> of a dishonest prover getting caught where the verifier 
+            happens to choose an edge and vertices on both ends are the same colour. So there 
+            is a probability of at most <InlineMath math='1-\frac1{|E|}' /> that the prover manages to trick the 
+            verifier. To reduce this probability, repetition of this process is required, 
+            and if the verification occurs <InlineMath math='n|E|' /> times, the probability of error reduces to 
+            <BlockMath math='\left(1-\frac1{|E|}\right)^{n|E|}\approx e^{-n},' />
+            which becomes more negligible as repetition increases.
           </p>
           <p>
             Each round starts with a fresh random permutation. On a valid colouring, that makes the
             two opened colours a uniformly random ordered pair of distinct colours, regardless of the secret
             colouring. The locks in this demo simulate cryptographic commitments.
-            In the real protocol, Xavier also verifies both openings against the original commitments.
+            In the real protocol, verifier also verifies both openings against the original commitments.
           </p>
         </details>
       </footer>
