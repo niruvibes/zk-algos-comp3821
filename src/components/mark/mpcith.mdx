@@ -1,4 +1,4 @@
-# Multi-Party Computation in the Head
+# A Multi-Party Computation in the Head
 Lets return to Xavier and Yasmina, they are both interested in the discrete logarithm problem, that is
 given some numbers $b,y\in\mathbb Z/p\mathbb Z$ (for large prime $p$), what is the 
 $x\in (\mathbb Z/p\mathbb Z)^\times = \mathbb Z/(p-1)\mathbb Z$ such that
@@ -30,7 +30,8 @@ If Xavier wants to be even more sure Yasmina is not cheating, he could request Y
 again, decreasing the chances of cheating without being caught exponentially.
 
 <br />
-The above procedure is an example of MPC in the head (MPCitH), a zero knowledge proof based on a multi-party 
+# General Definition for MPCitH
+The above procedure is an example of **MPC in the head** (MPCitH), a zero knowledge proof based on a multi-party 
 computation. The prover would like to indicate to the verifier knowledge of some secret $x$ which when fed 
 through some functionality gives a target value $y$:
 <div style={{ textAlign: 'center' }}>
@@ -68,7 +69,7 @@ Soundness and proof of knowledge follows from the fact that a malicious prover w
 must fudge the computation of $F$, visible in one of the views, which the verifier can catch if they 
 open said view. Each repetition of this process makes the chance of the verifier missing this vanishingly 
 small.
-
+<br />
 # Fiat-Shamir Heuristic
 The above ZKP is evidently interactive, but there is a way to convert the this into a non-interactive 
 ZKP, where the prover and verifier need no further interaction besides the verifier initially sending out 
