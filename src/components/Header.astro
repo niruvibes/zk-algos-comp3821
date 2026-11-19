@@ -7,7 +7,7 @@ const { pageTitle = '' } = Astro.props;
 
 <header class="l--flex -ai:center -jc:between -px:40 -py:20 -bd:b">
 	<a href={`${base}/`} class="-fz:m -fw:bold -td:none -c:text">
-		zk. <span class="-mis:5">How to prove nothing</span> <span id="nav-page-title" hidden aria-hidden="true" style="opacity: .5"> · {pageTitle} </span>
+		zk. <span class="-mis:5">How to prove nothing</span> <span id="nav-page-title" aria-hidden="true" style="opacity: .5"> · {pageTitle} </span>
 	</a>
 
 	<nav class="l--cluster -g:30 -fz:s -c:text-2">
@@ -27,6 +27,10 @@ const { pageTitle = '' } = Astro.props;
     z-index: 200;
     background: white;
   }
+  #nav-page-title {
+    opacity: 0;
+    transition: opacity ease 0.2s;
+  }
 </style>
 
 <script>
@@ -36,7 +40,7 @@ const { pageTitle = '' } = Astro.props;
 
   if (title) {
     const update = () => {
-      label.hidden = title.getBoundingClientRect().bottom > header.getBoundingClientRect().bottom;
+      label.style.opacity = (title.getBoundingClientRect().bottom > header.getBoundingClientRect().bottom) ? '0' : '1';
     };
     window.addEventListener('scroll', update, { passive: true });
     update();
