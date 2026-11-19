@@ -1,0 +1,101 @@
+---
+interface Props {
+  title?: string;
+  collapsible?: boolean;
+  open?: boolean;
+  variant?: 'info' | 'warning';
+}
+const {
+  title = 'Note',
+  collapsible = false,
+  open = false,
+  variant = 'info',
+} = Astro.props;
+---
+
+{collapsible ? (
+  <details class={`note-box collapsible ${variant}`} open={open}>
+    <summary class="note-title">{title}</summary>
+    <div class="note-content">
+      <slot />
+    </div>
+  </details>
+) : (
+  <aside class={`note-box ${variant}`}>
+    {title && <div class="note-title">{title}</div>}
+    <div class="note-content">
+      <slot />
+    </div>
+  </aside>
+)}
+
+<style>
+  .note-box {
+    border-left: 4px solid;
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin: 24px 0;
+  }
+
+  /* Blue (default) */
+  .note-box.info {
+    background-color: #e6f2ff;
+    border-left-color: #2563eb;
+  }
+  .note-box.info .note-title {
+    color: #1e3a8a;
+  }
+  .note-box.info summary.note-title::after {
+    color: #2563eb;
+  }
+
+  /* Red (warning) */
+  .note-box.warning {
+    background-color: #fef2f2;
+    border-left-color: #dc2626;
+  }
+  .note-box.warning .note-title {
+    color: #991b1b;
+  }
+  .note-box.warning summary.note-title::after {
+    color: #dc2626;
+  }
+
+  .note-title {
+    font-weight: 700;
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+  }
+
+  /* Collapsible styles */
+  details.note-box summary.note-title {
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+  }
+
+  details.note-box summary.note-title::-webkit-details-marker {
+    display: none;
+  }
+
+  details.note-box summary.note-title::after {
+    content: "+";
+    font-size: 1.2rem;
+  }
+
+  details.note-box[open] summary.note-title {
+    margin-bottom: 10px;
+  }
+
+  details.note-box[open] summary.note-title::after {
+    content: "−";
+  }
+
+  .note-content :global(p:last-child) {
+    margin-bottom: 0;
+  }
+</style>
