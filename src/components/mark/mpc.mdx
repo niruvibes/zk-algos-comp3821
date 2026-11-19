@@ -99,7 +99,7 @@ then each is tasked to compute the following products of their shares in this fo
 <div style={{ textAlign: 'center' }}>
 $$\begin{matrix} \red{[a]_1[b]_1} & \red{[a]_1[b]_2} & \red{[a]_1[b]_3} & \blue{[a]_1[b]_4} & \purple{[a]_1[b]_5} \\ \red{[a]_2[b]_1} & \orange{[a]_2[b]_2} & \orange{[a]_2[b]_3} & \orange{[a]_2[b]_4} & \purple{[a]_2[b]_5} \\ \red{[a]_3[b]_1} & \orange{[a]_3[b]_2} & \green{[a]_3[b]_3} & \green{[a]_3[b]_4} & \green{[a]_3[b]_5} \\ \blue{[a]_4[b]_1} & \orange{[a]_4[b]_2} & \green{[a]_4[b]_3} & \blue{[a]_4[b]_4} & \blue{[a]_4[b]_5} \\ \purple{[a]_5[b]_1} & \purple{[a]_5[b]_2} & \green{[a]_5[b]_3} & \blue{[a]_5[b]_4} & \purple{[a]_5[b]_5} \\ \end{matrix}$$
 </div>
-- Each party sends their share to $\text{ceil}(n/2)$ other parties (this step is obviously insecre!). 
+- Each party sends their share to $\text{ceil}(n/2)$ other parties (this step is obviously insecure!). 
 For example, Dahlia sends her shares to Ellie and Alice.
 - Each party then computes their products, namely Alice recieves $\red{[a]_2,[b]_2,[a]_3,[b]_3}$. from Bob 
 and Cole, and calculates

@@ -1,0 +1,84 @@
+## Background Story
+Say Xavier and Yasmina bought a raffle ticket together, and they had just won a copy of the new game Grand Tech Auto 6. 
+They are overjoyed, but unfortunately, only one of them can keep the copy.
+Xavier and Yasmina would normally flip a coin for this, however Yasmina is currently on holidays overseas, and so they resolve this over the phone.
+Now since Xavier and Yasmina both really want the prize, they both can't trust either eachother to flip the coin.
+If one of the flips it, and another makes the call, how can they be sure that the person who flipped the coin didn't just change their mind and pretend the coin was something else?
+This is exactly the scenario where a commit scheme would be used.
+
+# Commitment Scheme Definition
+A commitment scheme are used to make some prover unable to change their secret message $m$ without immediately revealing them to the verifier. 
+More specifically, the prover will, with some random blinding factor $r$, create send the commit,
+<div style={{ textAlign: 'center' }}>
+    $$c = \text{Commit}(m,r)$$ 
+</div>
+to the verifier using some agreed algorithm. 
+When the message needs to be revealed, the prover give both $m$ and $r$ to the verifier so they can recompute and verify it matches the given commit $c$.
+<br />
+
+Notice this solves the problem we had before with Xavier and Yasmina. Now, one person like Xavier has to flip the coin and the record the result.
+Then, using some commitment scheme, Xavier can commit the result of the coin with some random blinding factor string, and encoding heads and tails as "H" or "T".
+The resulting commmit $c$ could be some string which Xavier would tell Yasmina about over the phone.
+Finally, when Yasmina makes her guess to Xavier, Xavier can then reveal the result of the coin flip and the random blinding factor to Yasmina, and Yasmina can verify the result and the blinding factor does indeed equal the commit she was given before.
+Of course, for Xavier and Yasmina to trust that this scheme works, then this commitment scheme has to have two important properties. Namely, it must be **binding** and **hiding**.
+## Hiding and binding
+For a commitment scheme to be **hiding**, it means that the commitment $c$ cannot easily be reversed to find which $m$. 
+This is one reason why commitment schemes usually have some blinding factor $r$ as well. 
+If there was no $r$, then when Yasmina gets the commit from Xavier, she knows that the message is only "H" or "T".
+As a result, for any commitment function, she could just simply try both options to find out what the message without Xavier having to reveal it.
+Hence, this blinding factor $r$ usually has to be large to make sure that there is enough options in the input space so that Yasmina cannot try all the possibilities.
+<br />
+
+For a commit scheme to be **binding**, it means that for some $m$ and $r$, it cannot be easily found some other $m'$ and $r'$ such that
+<div style={{ textAlign: 'center' }}>
+    $$\text{Commit}(m',r') = \text{Commit}(m,r).$$ 
+</div>
+
+In other words, this means that once Xavier sends the commit $c$ to Yasmina, Xavier cannot change his mind about what message was commited, as to do so, Xavier has to find some new message $m'$ and blinding factor $r'$ that gives the exact same commit.
+<br />
+
+Now for both hiding and binding, they can be in one of two following forms:
+1. **Commputational**: The property can be broken, given enough computational power. 
+This computational power however is extradionary large, as to break the property, it requires solving some extradionary hard problem. A common example is the descrete logarithm problem.
+2. **Perfect**:  The property cannot be broken, even with infinite computational power.
+This means that the commit scheme has some nice mathematical structure, such that it is impossible to determine a way to break the property.
+
+Importantly, **a commitment scheme cannot be simultaneously perfectly binding and perfect hiding**.
+This is because to be perfectly binding means each commit can only be from at most one message.
+To be perfectly hiding though each commitment must be equally likely from any secret message.
+Clearly, both of these properties contradict eachother, and so its evident that a commit scheme cannot have both.
+In the context of zero knowledge proofs, usually prioritise perfectly hiding to ensure secrets are held permanently, meaningly the commitments are computational binding.
+<br />
+
+Knowing this, Xavier and Yasmina now just has to choose a commit scheme to use. As such, consider a simple example of a scheme.
+# Hash Commit Scheme
+In this scheme, the message $m$ can be concatanated with $r$, and then passed into the hashing function.
+This simple hash commitment where $c = H(m\parallel r)$ using a hash like SHA-256 or Poseidon, is both computationally hiding and binding.
+As $H$ hashes any size input into a finite size commit, collisions must occur by the pigeonhole principle preventing perfect binding. 
+As $r$ is finite and hashing is deterministic, and verifier can brute force eliminate some possible messages, preventing perfect hiding.
+<br />
+
+In the case of Xavier and Yasmina, then if they wish to do this coin flip, Xavier simply has to create the commit by hashing the string which is the message and the blinding factor concatenated together.
+This is a good scheme for Xavier and Yasmina's problem, but there are plenty of other types of commitment schemes to solve different types of problem.
+# Merkle Trees
+When there are vectors of data/messages, Merkle trees can be used. 
+If the normal hash commitment scheme was used as before, then this means that there would be one commit for every single message.
+Instead, Merkle Trees allow only one commit to be sent to the verifier instead of multiple.
+Each message is hashed (in ZKP with some blinding factor $r$), and then the continuously hashed pairwise upwards until there is a single root hash/commitment which is given to the verifier.
+To open specific messages, the prover provides the target messages along with any other nodes (known as siblings hashes) required to construct the final root.
+This ensures the unrevealed messages stay hidden while only having to send one commit message to the verifier, which is useful for MPCitH ZKPs.
+
+# Pedersen Commitment Scheme
+The Pedersen commitment scheme preserves algebraic structure to enable perfect hiding and relies on the discrete logarithm problem to make it computationally binding. 
+It uses some large prime modulus $p$ over the multiplicative group $(\mathbb Z/p\mathbb Z)^\times=\{1,2,\dots,p-1\}$ and public parameters $g$ and $h$ to compute the commitment $c = g^mh^r\ (\bmod{\ p})$.
+<br />
+
+Now $p$ is a safe prime so $p = 2q+1$ where $q$ is known as a Sophie Germain prime. 
+The multiplicative group has $2q$ elements, meaning by Lagrange's Theorem possible cyclic subgroup sizes are $1,2,q,$ and $2q$. 
+Both $g$ and $h$ are chosen to be apart of the large prime cyclic subgroup of size $q$ so that algorithms like the Pohlig-Hellman cannot use the Chinese Remainder Theorem can break the cycle into smaller loops. 
+Also, $h$ is generated using a "Nothing Up My Sleeve" method so that a solution for $x$ such that $h=g^x$ is unknown to ensure a prover cannot break binding easily.
+<br />
+
+Finally, the scheme is additively homomorphic, meaning given two messages and corresponding blinding factors, adding them first and then committing it gives the same commitment as committing the messages separately and multiplying those two commits together.
+This makes it useful for applications such as digital transactions and signatures.
+<br />
