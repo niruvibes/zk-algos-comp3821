@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import TOC from '../components/TOC.astro';
+import Graph3Colouring from '../components/interactive/graph_3_colouring.jsx';
 import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
 ---
 <Layout title="Introduction | ZK Proofs">
@@ -67,9 +68,17 @@ import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
                     sunt in culpa qui officia deserunt mollit anim id est laborum.
                 </Text>
 
-                <Heading level="3" fz="2xl" fw="700" lh="xs" c="text-2">
+                <Heading id="3-color" level="3" fz="2xl" fw="700" lh="xs" c="text-2">
                     3-Colouring ZKP
                 </Heading>
+
+                <Text>
+                    Yasmina claims she can colour the vertices of a public graph using three colours
+                    so that every edge joins two different colours. Play as Xavier and check her
+                    claim one edge at a time while keeping the full colouring hidden.
+                </Text>
+
+                <Graph3Colouring client:load />
 
                 <Heading level="3" fz="2xl" fw="700" lh="xs" c="text-2">
                     Introduction to Fiat-Shamir
