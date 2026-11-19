@@ -76,7 +76,10 @@ Suppose that Xavier and Yasmina are no longer just flipping a coin but Xavier is
 Using the hash commitment scheme, Xavier would have to send 100 commits over to Yasmina.
 This gets more and more impractical as the number of results increases.
 Merkle Trees give us a way for a vector (or multiple) messages to be committed and compressed into a single commitment.
-
+<br />
+<div style={{ textAlign: 'center' }}>
+    <img src="/zk-algos-comp3821/Merkle_diagram.png" />
+</div>
 <br />
 A Merkle Tree works by first hashing each individual message normally as before with their own blinding factors.
 Then, each of these hashes are paired up, and then hashed together to create a combined hash.
@@ -85,15 +88,10 @@ This last hash is the root node, which is the hash that can be given to the veri
 To reveal a single message, instead of revealing all the secret messages, only the message and its blinding factor is revealed, along with any hashes it is hashed with along the way to get to the root node.
 These other hashes are called the sibling hashes, and an example of how this works can be seen below.
 
-<div style={{ textAlign: 'center' }}>
-    <img src="/zk-algos-comp3821/Merkle_diagram.png" />
-</div>
-<br />
+<MerkleTree client:load />
 
 This scheme is helpful when there are multiple messages as only one commit needs to be sent, and ensures the unrevealed messages stay hidden throughout this process.
 This in particular is very helpful for later when we discuss MPCitH ZKPs.
-
-<MerkleTree client:load />
 
 # Pedersen Commitment Scheme
 <NoteBox title="Warning: Not required reading for MPCitH!" collapsible variant="warning">
