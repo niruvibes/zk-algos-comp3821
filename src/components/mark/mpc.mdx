@@ -87,7 +87,7 @@ $$a\cdot b=\sum_{i,j}[a]_i[b]_j$$
 </div>
 There are several subprotocols to carry out the multiplication of two secrets from their
 shares. We will take a look at an example called **replicated secret sharing**, though
-many alternatives with different tradoffs exist, for example Beaver triples.
+many alternatives with different tradeoffs exist, for example Beaver triples.
 <br />
 A naive but evidently insecure version of this plays out as so; say we have five parties, which
 we colour code <span style={{ color:'red' }}>Alice (1)</span>,
@@ -180,7 +180,7 @@ $$F(x)=y.$$
 - This is typically chosen to be an $\mathsf{NP}$ relation; where knowing $x$, verifying $y=F(x)$ takes a
 polynomial amount of time to the input size, but the task of finding a preimage $x$ knowing $y$ on
 average takes superpolynomial time. 
-- Common examples include hashing functions like SHA, or Posiedon; or the discrete logarithm problem similar
+- Common examples include hashing functions like SHA, or Poseidon; or the discrete logarithm problem similar
 to our example, over a suitably 'difficult' group.
 
 To do this, the prover will split the secret $x$ into $n$ shares and simulate a multi-party 
