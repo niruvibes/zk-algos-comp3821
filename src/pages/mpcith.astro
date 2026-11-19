@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import TOC from '../components/TOC.astro';
 import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
+import MPCitH from '../components/mark/mpcith.mdx'
 ---
 <Layout title="MPC in the Head | ZK Proofs">
     <div class="title-background">
@@ -13,7 +14,7 @@ import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
     <Stack>        
         <div class="content-background">
             <Box class="content">
-
+                <MPCitH />
             </Box>
         </div>
     </Stack>
@@ -28,7 +29,7 @@ import { WithSide, Box, Stack, Text, Heading } from 'lism-css/astro';
     }
 
     .content {
-        max-width: 1200px;
+        max-width: 800px;
         margin: 0 auto;
         padding: 0 32px;
     }

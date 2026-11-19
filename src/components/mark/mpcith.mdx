@@ -70,4 +70,39 @@ open said view. Each repetition of this process makes the chance of the verifier
 small.
 
 # Fiat-Shamir Heuristic
+The above ZKP is evidently interactive, but there is a way to convert the this into a non-interactive 
+ZKP, where the prover and verifier need no further interaction besides the verifier initially sending out 
+said proof of knowledge, and the prover checking the verifier's work. 
 
+This method is called the **Fiat-Shamir transformation** (or the **Fiat-Shamir heuristic**). This transformation
+works for any ZKP which follows the following structure
+1. The prover generates some "random looking" commit which they reveal to the verifier.
+2. The verifier uniformly generates some random challenge and reveals it to the prover.
+    - The fact that the verifier's role only involves issuing 'random' challenges is crucial for this 
+    transformation to work. Such ZKPs which function like this are called public-coin.
+3. The prover computes the final proof based on the commitment and the challenge.
+
+The heuristic works like this, say we had access to some **random oracle**:
+- That is a mathematical function which for a space of inputs, uniformly generates outputs in a 'random' manner.
+- In practice hashing functions are typically used as these oracles.
+
+The prover can play out the ZKP, keeping a transcript of all information they would send and recieve from a
+theoretical verifier. Whenever the prover would be issued a challenged by a verifier in the interactive proof,
+the prover instead feeds in all the relevant public information, and proof transcript into this oracle, 
+which will produce a seemingly random challenge for the verifier to respond to.
+In this way, the verifier uses the random oracle instead of a particlar prover, to create unpredictable
+challenges which the verifier then answers.
+
+There are some nuances here, namely no mathematical function can truly be 'random', only very difficult to
+predict or back-calculate. It may possible, though difficult for the prover to forge a valid non-interactive proof
+transcript this way; a good Fiat-Shamir transformation makes this computationally infeasable to pull off.
+
+As an analogy, this is like playing tennis with a particularly rugged training wall. The unpredictability of the
+bumps act similar to the suprising serves of a good opponent, and could demonstrate a player's test of skill.
+Such play can also be cheesed given good enough knowledge of the behaviour of bounces off the wall, so care
+must be taken in evaluating the soundness of this test.
+
+{/* 
+Bibliography to add:
+https://www.zkdocs.com/docs/zkdocs/protocol-primitives/fiat-shamir/
+*/}
