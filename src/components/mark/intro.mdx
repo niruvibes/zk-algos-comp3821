@@ -1,7 +1,5 @@
 import Coloring from '../interactive/graph_3_colouring.jsx'
 
-<Coloring client:load />
-
 # What is a Zero-Knowledge Proof?
 Let’s say you want to have access to sensitive data, like your banking details, 
 but in order for the bank to grant you access they require a proof of 
@@ -43,3 +41,31 @@ Let Xavier be the verifier and Yasmina be the prover because we didn’t like Al
 
 # Interactive vs. Non-Interactive ZKPs
 ## Graph 3-Colouring ZKP
+The prover is given a graph, $G=(V,E)$, that they claim to be 3-colourable, 
+meaning that for any vertex $V$ that is labelled a certain colour, any neighbouring 
+vertices would not be of the same colour as $V$. The prover has to convince the verifier 
+that the graph is 3-colourable without revealing the actual colouring of $G$ using the following method:
+1. The prover, $P$, has access to a 3-colouring configuration, $\overrightarrow\sigma$, 
+for $G$, randomly chooses permutation $\pi\leftarrow perm\{0,1,2\}$, where $\{0,1,2\}$ 
+represents the set of colours, each labeled by a number, and commits to $\overrightarrow\sigma$.
+2. A commitment scheme is made such that for every vertex $v\in V$ there exists 
+$c_v$ which is the result a hash function with the inputs $\pi(\sigma_v)$, the permuted colour 
+of the vertex, and $r_v$, a random key, and the prover sends the committed values 
+to the verifier. To find out more about commitment schemes, go to <a href="commit">this page</a>.
+3. The verifier chooses a random edge, $(i,j)\in E$, and sends the chosen edge to $P$.
+4. $P$ reveals to verifier permuted colours of vertices $i$ and $j$, $\pi(\sigma_i)$ 
+and $\pi(\sigma_j)$ respectively and random keys, $r_i$ and $r_j$, used to commit the colours.
+5. Verifier checks if commitments match revealed values, and $\pi(\sigma_i)$ and 
+$\pi(\sigma_j)$ are different. If both conditions hold there is trust.
+<br />
+Below is an interactive that demonstrates the communication between the prover and verifier 
+for graph 3-colouring ZKP:
+
+<Coloring client:load />
+
+Since the process of verification is required to repeat multiple times to fulfil 
+the soundness property of the ZKP, there is back-and-forth communication between 
+the verifier and prover. This makes Graph 3-Colouring ZKP an interactive ZKP.
+<br />
+
+## Difference between interactive and non-interactive
