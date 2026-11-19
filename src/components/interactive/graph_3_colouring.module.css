@@ -1,9 +1,9 @@
 .demo {
-  --ink: #33281b;
-  --muted: #685844;
-  --line: #dfceb4;
-  --paper: #fffdf8;
-  --accent: #7e4719;
+  --ink: #1b2e33;
+  --muted: #445a68;
+  --line: #b4d3df;
+  --paper: #f8fdff;
+  --accent: #19667e;
   margin-block: 1rem 2rem;
   border: 1px solid var(--line);
   border-radius: 0.875rem;
@@ -70,7 +70,7 @@
 
 .demo button:hover:not(:disabled) {
   border-color: var(--accent);
-  background: #f7ecd9;
+  background: #d9eff7;
 }
 
 .demo :is(button, input, summary):focus-visible {
@@ -93,12 +93,12 @@
   align-content: start;
   min-width: 0;
   padding: clamp(0.75rem, 3vw, 1.5rem);
-  background: radial-gradient(#dfceb4 1px, transparent 1px) 0 0 / 16px 16px, #faf3e5;
+  background: radial-gradient(#b4cfdf 1px, transparent 1px) 0 0 / 16px 16px, #e5f4fa;
 }
 
 .boardLabel {
   justify-self: start;
-  background: #faf3e5;
+  background: #e5f2fa;
 }
 
 .graph {
@@ -109,7 +109,7 @@
 }
 
 .edge {
-  stroke: #a3937e;
+  stroke: #7e9aa3;
   stroke-width: 2;
   stroke-linecap: round;
 }
@@ -127,7 +127,7 @@
 }
 
 .vertex {
-  stroke: #897763;
+  stroke: #638189;
   stroke-width: 2;
 }
 
@@ -209,11 +209,11 @@
   justify-self: start;
   border-color: var(--accent);
   background: var(--accent);
-  color: #fffdf8;
+  color: #f8fdff;
 }
 
 .demo button.primary:hover {
-  background: #603514;
+  background: #144760;
 }
 
 .footer {
