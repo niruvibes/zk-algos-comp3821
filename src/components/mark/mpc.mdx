@@ -1,0 +1,155 @@
+import Mpc from '../interactive/mpc.jsx'
+
+## Background
+<br />
+<Mpc client:load />
+<br />
+
+
+The RSA cryptosystem is one of the oldest widely used system of cryptography algorithms used
+for secure data transmission. However concerns on the theoretical ability of quantum computers
+to factor large numbers in polynomial time, thereby breaking the security of RSA, led to the search 
+for alternative algorithms.
+<br />
+In 2017, the US National Institute of Standards and Technology launched the post-quantum cryptography 
+project, calling for submissions of various cryptographic algorithms which would be resistant to quantum
+attacks. While stronger and more efficient schemes would eventually be chosen for the standard, many of 
+the submitted algorithms (PICNIC, AIMer, Biscuit,...) used schemes based on multi-party computation in 
+the head, which we explore here.
+<br />
+
+# Multi-Party Computation
+Multi-Party Computation (MPC) is a family of protocols whose aim is to let a collection of $n$ parties
+carry out some computation. Namely each party has some input $w_i$ which they would like to keep
+private, and have knowledge of public information $x$. Together they wish to compute
+some **functionality**
+<div style={{ textAlign: 'center' }}>
+$$f(w_1,\dots,w_n, x)$$
+</div>
+without revealing their private inputs.
+
+These protocols consist of (possibly many) rounds of private computation, and communication between
+the parties, with the final result being the computation of the value of $f(w_1,\dots,w_n, x)$.
+Specifically, on the $i$th round, the $k$th party performs a computation:
+- $\Pi_{k,i}(w_k, x,\text{prior messages recieved})=\text{next messages to send}$
+- Then sends out messages to the $l$th party $m_{k,l,i}$
+
+- The protocol is said to maintain privacy if the messages sent to a party does not reveal any
+information about other parties private inputs.
+<br />
+<div style={{ textAlign: 'center' }}>
+    <img src="/zk-algos-comp3821/MPC_diagram.png" />
+</div>
+<br />
+For the purpose of working towards MPC in the Head, we often consider the private inputs $w_i$ to be
+shares of some secret (or a collection of shares of several secrets). 
+<div style={{ textAlign: 'center' }}>
+$$[w]_i=([a]_i,[b]_i,\dots)$$
+</div>
+Lets take the example of MPC protocols which work upon additive secret shares over a prime order finite 
+field $\mathbb Z/p\mathbb Z$.
+- Other MPC protocols exist which work for other secret sharing schemes, for example 
+Ben-Or-Goldwasser-Widgerson (BGW) protocols are certain MPC protocols designed around Shamir secret
+shares.
+- Additionally many MPC protocols exist for computation of non-prime order finite fields, boolean values and 
+logical gates, matrix arithmetic and more.
+
+Also for simplicity lets assume the functionality $f$ can be broken down into several basic arithmetic
+operations, exploring some methods for their computation.
+<br />
+## Linear operations
+### Addition of secrets and public values
+Given two secrets $a,b$ with a collection of shares $[a]_i,[b]_i$ which each party holds, notice that
+if each party can compute a valid secret sharing of the sum $a+b$ by adding the individual shares
+<div style={{ textAlign: 'center' }}>
+$$[a+b]_i=[a]_i+[b]_i$$
+</div>
+It is not hard to see that indeed
+<div style={{ textAlign: 'center' }}>
+$$\sum_i[a+b]_i=\sum_i[a]_i+\sum_i[b]_i=a+b$$
+</div>
+
+Now to add a public constant $x_0$ to a secret $a$, one can either choose one party (say the first)
+to add $x_0$ to their share, or have all $n$ parties add $x_0\cdot n^{-1}$ to their share (where 
+$n^{-1}$ is the appropriate multiplicative inverse in $\mathbb Z/p\mathbb Z$).
+<div style={{ textAlign: 'center' }}>
+$$[a+x_0]_i=[a]_i+x_0\cdot n^{-1}$$
+</div>
+Both these operations require no communication rounds.
+<br />
+### Scaling by public values
+Multiplication of two secrets from their shares is typically a lot more difficult, however 
+multiplication of a secret $a$ by a public value $x_0$ just involves multiplying every
+share by $x_0$:
+<div style={{ textAlign: 'center' }}>
+$$[x_0\cdot a]_i=x_0\cdot [a]_i$$
+</div>
+<br />
+## Multiplication of secret values with Replicated Secret Sharing
+{/* Mention something on beaver triples as an alternative */}
+The difficulty of multiplication in additive secret sharing comes from the need to calculate
+all the products of the form $[a]_i[b]_j$:
+<div style={{ textAlign: 'center' }}>
+$$a\cdot b=\sum_{i,j}[a]_i[b]_j$$
+</div>
+There are several subprotocols to carry out the multiplication of two secrets from their
+shares. We will take a look at an example called **replicated secret sharing**, though
+many alternatives with different tradeoffs exist, for example Beaver triples.
+<br />
+A naive but evidently insecure version of this plays out as so; say we have five parties, which
+we colour code <span style={{ color:'red' }}>Alice (1)</span>,
+<span style={{ color:'orange' }}>Bob (2)</span>,
+<span style={{ color:'green' }}>Cole (3)</span>,
+<span style={{ color:'blue' }}>Dahlia (4)</span>,
+<span style={{ color:'purple' }}>Ellie (5)</span>,
+then each is tasked to compute the following products of their shares in this following manner:
+<div style={{ textAlign: 'center' }}>
+$$\begin{matrix} \red{[a]_1[b]_1} & \red{[a]_1[b]_2} & \red{[a]_1[b]_3} & \blue{[a]_1[b]_4} & \purple{[a]_1[b]_5} \\ \red{[a]_2[b]_1} & \orange{[a]_2[b]_2} & \orange{[a]_2[b]_3} & \orange{[a]_2[b]_4} & \purple{[a]_2[b]_5} \\ \red{[a]_3[b]_1} & \orange{[a]_3[b]_2} & \green{[a]_3[b]_3} & \green{[a]_3[b]_4} & \green{[a]_3[b]_5} \\ \blue{[a]_4[b]_1} & \orange{[a]_4[b]_2} & \green{[a]_4[b]_3} & \blue{[a]_4[b]_4} & \blue{[a]_4[b]_5} \\ \purple{[a]_5[b]_1} & \purple{[a]_5[b]_2} & \green{[a]_5[b]_3} & \blue{[a]_5[b]_4} & \purple{[a]_5[b]_5} \\ \end{matrix}$$
+</div>
+- Each party sends their share to $\text{ceil}(n/2)$ other parties (this step is obviously insecure!). 
+For example, Dahlia sends her shares to Ellie and Alice.
+- Each party then computes their products, namely Alice recieves $\red{[a]_2,[b]_2,[a]_3,[b]_3}$. from Bob 
+and Cole, and calculates
+<div style={{ textAlign: 'center' }}>
+$$\red{[a\cdot b]_1=[a]_1[b]_1+[a]_2[b]_1+[a]_3[b]_1+[a]_1[b]_2+[a]_1[b]_3}.$$
+</div>
+Together, all parties would now have computed all the share products $[a]_i[b]_j$, and so their sum
+is equal to $a\cdot b$:
+<div style={{ textAlign: 'center' }}>
+$$a\cdot b=\sum_i [a\cdot b]_i.$$
+</div>
+Again for the goal of maintaining privacy of the other initial inputs, the original shares should not be 
+known by other parties. It is best if we have a way to randomly create a new set of shares which can be
+messaged to other people such that the original share is not known.
+<br />
+### Key/secret resharing
+To create a new set of shares to the original, Each party performs their own additive secret sharing on 
+their share to split it into $n$ smaller shares:
+<div style={{ textAlign: 'center' }}>
+$$[a]_i=\sum_j [a]_{i,j}.$$
+</div>
+Each party sends the $j$th share to the $j$th party only, then each party takes their new set of shares
+<div style={{ textAlign: 'center' }}>
+$$[a]'_j=\sum_i [a]_{i,j}.$$
+</div>
+Evidently these new shares $[a]'_j$ all still add up to the original $a$
+<div style={{ textAlign: 'center' }}>
+$$\sum_j[a]'_j=\sum_j\sum_i [a]_{i,j}=\sum_i[a]_i=a.$$
+</div>
+The parties are now safe to message these new shares without revealing information about the old shares.
+<br />
+Building blocks like the above can be found for other arithmetic operations, and also for operations 
+in other settings, such as private evaluation of logical gates for boolean values, or evaluation of
+matrix multiplications.
+<br />
+Such basic operations are the building blocks for complex functionalities which can be designed to be
+difficult to reverse (in the sense that it takes an exceedingly long time to reverse; e.g. asymptotically 
+faster than polynomial time in the input). This leads to the following application of MPC.
+<br />
+
+{/* 
+Bibliography to add:
+https://aly.fish/en/2025q4-cryptography/replicated-secret-sharing.pdf
+https://csrc.nist.gov/csrc/media/Projects/post-quantum-cryptography/documents/pqc-seminars/presentations/13-intro-mpc-in-the-head-05212024.pdf
+*/}
+
