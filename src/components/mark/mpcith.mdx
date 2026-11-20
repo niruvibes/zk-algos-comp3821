@@ -31,7 +31,6 @@ and Xavier checks that:
 If Xavier wants to be even more sure Yasmina is not cheating, he could request Yasmina to redo this interaction 
 again, decreasing the chances of cheating without being caught exponentially.
 
-<br />
 # General Definition for MPCitH
 The above procedure is an example of **MPC in the head** (MPCitH), a <a href="intro">zero knowledge proof</a> based on a multi-party 
 computation. The prover would like to indicate to the verifier knowledge of some secret $x$ which when fed 
@@ -57,11 +56,11 @@ and recieved.
 - The verifier validates those views are consistent with the commits and that the computations are
 consistent with a valid MPC computation.
 - This process is repeated enough times to convince the verifier.
-<br />
+
 <div style={{ textAlign: 'center' }}>
     <img src="/zk-algos-comp3821/MPCitH_diagram.png" />
 </div>
-<br />
+
 This proof of knowledge is zero knowledge if the MPC protocol is private, and the secret sharing
 scheme used is $t$-private where $t$ is the number of views which the verifier requests to open.
 
@@ -72,13 +71,13 @@ must fudge the computation of $F$, visible in one of the views, which the verifi
 open said view. Each repetition of this process makes the chance of the verifier missing this vanishingly 
 small.
 
-<br />
+
 <h1 id="fiat">Fiat-Shamir Heuristic</h1>
 
 The above ZKP is evidently interactive, but there is a way to convert the this into a non-interactive 
 ZKP, where the prover and verifier need no further interaction besides the verifier initially sending out 
 said proof of knowledge, and the prover checking the verifier's work. 
-<br />
+
 This method is called the **Fiat-Shamir transformation** (or the **Fiat-Shamir heuristic**). This transformation
 works for any ZKP which follows the following structure
 1. The prover generates some "random looking" commit which they reveal to the verifier.
@@ -86,7 +85,7 @@ works for any ZKP which follows the following structure
     - The fact that the verifier's role only involves issuing 'random' challenges is crucial for this 
     transformation to work. Such ZKPs which function like this are called public-coin.
 3. The prover computes the final proof based on the commitment and the challenge.
-<br />
+
 The heuristic works like this, say we had access to some **random oracle**:
 - That is a mathematical function which for a space of inputs, uniformly generates outputs in a 'random' manner.
 - In practice hashing functions are typically used as these oracles.
@@ -97,7 +96,7 @@ the prover instead feeds in all the relevant public information, and proof trans
 which will produce a seemingly random challenge for the verifier to respond to.
 In this way, the verifier uses the random oracle instead of a particlar prover, to create unpredictable
 challenges which the verifier then answers.
-<br />
+
 <NoteBox title="If the verifier makes the choices for the challenges, can't they hide their cheats?" collapsible>
 The verifier must use the random oracle to issue out the challenges, and any prover can validate that they
 used the oracle honestly.
@@ -106,12 +105,12 @@ predict or back-calculate some desired result. It may possible, though difficult
 valid non-interactive proof transcript this way; a good Fiat-Shamir transformation makes this computationally 
 infeasable to pull off.
 </NoteBox>
-<br />
+
 As an analogy, this is like playing tennis with a particularly rugged training wall. The unpredictability of the
 bumps act similar to the suprising serves of a good opponent, and could demonstrate a player's test of skill.
 Such play can also be cheesed given good enough knowledge of the behaviour of bounces off the wall, so care
 must be taken in evaluating the soundness of this test.
-<br />
+
 ### Further Reading
 🞂 https://blog.zksecurity.xyz/posts/mpcith-intro/
 
