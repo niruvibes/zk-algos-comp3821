@@ -8,7 +8,6 @@ Xavier and Yasmina would normally flip a coin for this, however Yasmina is curre
 Now since Xavier and Yasmina both really want the prize, they can't trust each other to flip the coin.
 If one of them flips it, and another makes the call, how can they be sure that the person who flipped the coin didn't just change their mind and pretend the coin was something else?
 This is exactly the scenario where a commit scheme would be used.
-<br />
 
 # Commitment Schemes
 A **commitment scheme** is a collection of algorithms used to make some prover unable to change their secret message $m$ without immediately revealing them to the verifier. 
@@ -18,7 +17,6 @@ More specifically, the prover will, with some random blinding factor $r$, create
 </div>
 to the verifier using some agreed algorithm. 
 When the message needs to be revealed, the prover gives both $m$ and $r$ to the verifier so they can recompute and verify it matches the given commit $c$.
-<br />
 
 Notice this solves the problem we had before with Xavier and Yasmina. Now, one person like Xavier has to flip the coin and record the result.
 Then, using some commitment scheme, Xavier can commit the result of the coin with some random blinding factor string, and encoding heads and tails as "H" or "T".
@@ -36,7 +34,6 @@ This is one reason why commitment schemes usually have some blinding factor $r$ 
 If there was no $r$, then when Yasmina gets the commit from Xavier, she knows that the message is only "H" or "T".
 As a result, for any commitment function, she could just simply try both options to find out what the message is without Xavier having to reveal it.
 Hence, this blinding factor $r$ usually has to be large to make sure that there are enough options in the input space so that Yasmina cannot try all the possibilities.
-<br />
 
 For a commit scheme to be **binding**, it means that for some $m$ and $r$, it cannot be easily found some other $m'$ and $r'$ such that
 <div style={{ textAlign: 'center' }}>
@@ -44,7 +41,6 @@ For a commit scheme to be **binding**, it means that for some $m$ and $r$, it ca
 </div>
 
 In other words, this means that once Xavier sends the commit $c$ to Yasmina, Xavier cannot change his mind about what message was committed, as to do so, Xavier has to find some new message $m'$ and blinding factor $r'$ that gives the exact same commit.
-<br />
 
 Now for both hiding and binding, they can be in one of two following forms:
 1. **Computational**: The property can be broken, given enough computational power. 
@@ -65,7 +61,6 @@ In this scheme, the message $m$ can be concatenated with $r$, and then passed in
 This simple hash commitment where $c = H(m\parallel r)$ using a hash like SHA-256 or Poseidon, is both computationally hiding and binding.
 As $H$ hashes any size input into a finite size commit, collisions must occur by the pigeonhole principle preventing perfect binding. 
 As hashing isn't guaranteed to map every possible message $m$ to a given output $c$ with equal probability, a verifier can brute force all pairs $m$ and $r$ and gain some information about what the message could be, preventing perfect hiding.
-<br />
 
 In the case of Xavier and Yasmina, then if they wish to do this coin flip, Xavier simply has to create the commit by hashing the string which is the message and the blinding factor concatenated together.
 This is a good scheme for Xavier and Yasmina's problem, but there are plenty of other types of commitment schemes to solve different types of problems.
@@ -74,11 +69,10 @@ Suppose that Xavier and Yasmina are no longer just flipping a coin but Xavier is
 Using the hash commitment scheme, Xavier would have to send 100 commits over to Yasmina.
 This gets more and more impractical as the number of results increases.
 Merkle Trees give us a way for a vector (or multiple) messages to be committed and compressed into a single commitment.
-<br />
 <div style={{ textAlign: 'center' }}>
     <img src="/zk-algos-comp3821/Merkle_diagram.png" />
 </div>
-<br />
+
 A Merkle Tree works by first hashing each individual message normally as before with their own blinding factors.
 Then, each of these hashes are paired up, and then hashed together to create a combined hash.
 This is repeated, with these new hashes being paired up and hashed together again until there is only one hash left.
@@ -133,7 +127,6 @@ This means that for any two messages $m_1$ and $m_2$, with their blinding factor
     $$\text{Commit}(m_1, r_1)\cdot \text{Commit}(m_2, r_2) \equiv \text{Commit}(m_1 + m_2, r_1 + r_2) \pmod{p}.$$
 </div>
 
-<br />
 This means that the underlying relationship of the messages and blinding factors can be checked without having to reveal any of the commits at all.
 This makes it useful for applications such as digital transactions.
 
@@ -156,7 +149,6 @@ Now as Xavier created the commitments, then Xavier knows the value of $r_{\text{
 As such, Xavier can also give out this value $R = r_{\text{in}} - (r_1 + r_2)$ to everyone, to prove that Xavier legitimately made this transaction.
 If this transaction was not legitimate and the tokens are not correctly balanced, then Xavier would have to solve the discrete logarithm problem to find the value $R'$ that makes it appear like he knew how this was done.
 As such, this value $R$ serves as a digital signature to prove that Xavier made a legitimate transaction, without having to tell anyone anything about the underlying messages!
-<br />
 
 Importantly, if Yasmina was to actually use these tokens, then Xavier would privately reveal her message $2$ and blinding factor $r_1$ so that Yasmina knows how much she got.
 In addition, Yasmina can use this blinding factor and the commitment so she also knows the $R$ value for her own future transactions!

@@ -16,10 +16,19 @@ interface Props {
 
 const { title, centerContent = false, pageTitle = '', stickyTitle = false } = Astro.props;
 const hasLessonTitle = Astro.slots.has('lesson-title');
-
 ---
 
-<ClientRouter transition:animate="slide"/>
+<script>
+  const updateHeader = () => {
+    const header = document.querySelector('header');
+    if (header) {
+      header.classList.toggle('is-scrolled', window.scrollY > 10);
+    }
+  };
+
+  window.addEventListener('scroll', updateHeader, { passive: true });
+  document.addEventListener('astro:page-load', updateHeader);
+</script>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -27,6 +36,7 @@ const hasLessonTitle = Astro.slots.has('lesson-title');
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
+    <ClientRouter transition:animate="slide" />
 
     <!-- katex stuff nico reference. -->
      <!-- i think there is a better way to do this in astro,
@@ -56,20 +66,20 @@ const hasLessonTitle = Astro.slots.has('lesson-title');
         <>
           <Wrapper
             class="title-background"
-            contentSize="800px"
+            contentSize="700px"
             bgc="white"
-            mt={['40', '50']}
-            pos={stickyTitle ? 'sticky' : undefined}
-            t={stickyTitle ? '0' : undefined}
-            z={stickyTitle ? '100' : undefined}
+            pt={['30', '45']}
+            pb={['20', '25']}
           >
-            <Heading level="1" fz="4xl" fw="700" lh="xs" px="32px">
+            <Heading level="1" fz={['2xl', '4xl']} fw="700" lh="xs" px={['20px', '32px']}>
               <slot name="lesson-title" />
             </Heading>
           </Wrapper>
 
-          <Wrapper contentSize="800px" bgc="#f2f9ff" fx="1" py="32px">
-            <Box px="32px"><slot /></Box>
+          <Wrapper contentSize="700px" bgc="#f2f9ff" fx="1" py="40px">
+            <Box px={['20px', '32px']} class="lesson-content">
+              <slot />
+            </Box>
           </Wrapper>
         </>
       ) : (
@@ -84,3 +94,63 @@ const hasLessonTitle = Astro.slots.has('lesson-title');
     </Stack>
   </Stack>
 </html>
+
+<style>
+  :global(header) {
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+  :global(header.is-scrolled) {
+    border-bottom-color: #dbeafe;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  }
+
+  .title-background {
+    background: linear-gradient(to bottom, #ffffff 0%, #f2f9ff 100%) !important;
+  }
+
+  .lesson-content {
+    color: #334155;
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .lesson-content :global(h1),
+  .lesson-content :global(h2),
+  .lesson-content :global(h3) {
+    color: #0f172a;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .lesson-content :global(> :first-child) {
+    margin-top: 0;
+  }
+
+  .lesson-content :global(h1) { font-size: 1.6rem; }
+  .lesson-content :global(h2) { font-size: 1.35rem; }
+  .lesson-content :global(h3) { font-size: 1.15rem; }
+
+  .lesson-content :global(p) {
+    margin-bottom: 1.1rem;
+  }
+
+  .lesson-content :global(strong) {
+    color: #0f172a;
+    font-weight: 600;
+  }
+
+  .lesson-content :global(ol),
+  .lesson-content :global(ul) {
+    padding-left: 1.5rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .lesson-content :global(li) {
+    margin-bottom: 0.4rem;
+  }
+</style>
