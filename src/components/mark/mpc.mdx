@@ -1,4 +1,5 @@
-import Mpc from '../interactive/mpc.jsx'
+import Mpc from '../interactive/mpc.jsx';
+import NoteBox from '../interactive/NoteBox.astro';
 
 ## Background and Motivation
 The RSA cryptosystem is one of the oldest widely used system of cryptography algorithms used
@@ -43,14 +44,16 @@ $$[w]_i=([a]_i,[b]_i,\dots)$$
 </div> 
 Lets take the example of MPC protocols which work upon additive secret shares over a prime order finite 
 field $\mathbb Z/p\mathbb Z$.
+
+Also for simplicity lets assume the functionality $f$ can be broken down into several basic arithmetic
+operations, exploring some methods for their computation.
+<NoteBox title="What if I want to carry out some different type of computation?" collapsible>
 - Other MPC protocols exist which work for other secret sharing schemes, for example 
 Ben-Or-Goldwasser-Widgerson (BGW) protocols are certain MPC protocols designed around Shamir secret
 shares.
 - Additionally many MPC protocols exist for computation of non-prime order finite fields, boolean values and 
 logical gates, matrix arithmetic and more.
-
-Also for simplicity lets assume the functionality $f$ can be broken down into several basic arithmetic
-operations, exploring some methods for their computation.
+</NoteBox>
 
 ## Linear operations
 ### Addition of secrets and public values
@@ -117,7 +120,7 @@ Again for the goal of maintaining privacy of the other initial inputs, the origi
 known by other parties. It is best if we have a way to randomly create a new set of shares which can be
 messaged to other people such that the original share is not known.
 
-### Key/secret resharing
+### Key/Secret Resharing (Proactivisation)
 To create a new set of shares to the original, Each party performs their own additive secret sharing on 
 their share to split it into $n$ smaller shares:
 <div style={{ textAlign: 'center' }}>
@@ -132,6 +135,7 @@ Evidently these new shares $[a]'_j$ all still add up to the original $a$
 $$\sum_j[a]'_j=\sum_j\sum_i [a]_{i,j}=\sum_i[a]_i=a.$$
 </div>
 The parties are now safe to message these new shares without revealing information about the old shares.
+This technique is called **secret resharing** or sometimes **key resharing** or **proactivisation**.
 
 <Mpc client:load />
 

@@ -3,19 +3,26 @@ import NoteBox from '../interactive/NoteBox.astro';
 # A Multi-Party Computation in the Head
 Lets return to Xavier and Yasmina, they are both interested in the discrete logarithm problem, that is
 given some numbers $b,y\in\mathbb Z/p\mathbb Z$ (for large prime $p$), what is the 
-$x\in (\mathbb Z/p\mathbb Z)^\times = \mathbb Z/(p-1)\mathbb Z$ such that
+$w\in\mathbb Z/(p-1)\mathbb Z$ such that
 <div style={{ textAlign: 'center' }}>
-$$F(x)=b^x\equiv y\quad\mod p.$$
+$$f(w,b)=b^w\equiv y\quad\mod p.$$
 </div>
-Yasmina claims they found such a $x$, but would like to keep it a secret. To be able to prove to Xavier 
-that their $x$ satisfies $b^x\equiv y$, without revealing $x$, she decides to split $x$ into 128 
-<a href="share">additive shares</a> $[x]_1,[x]_2,\dots,[x]_{128}$, and simulates the following <a href="mpc">multi-party computation</a>:
-- Have 128 simulated parties take the exponentials $[b^x]_i=b^{[x]_i}$ privately,
-- Broadcast the values of $[b^x]_i$ to all the other parties,
-- Collect all the broadcasted values of $[b^x]_i$ and multiply them together to get $y=[b^x]_1\cdots[b^x]_{128}$.
+<NoteBox title="Why is the exponent modulo p-1?" collapsible>
+This is due to Fermat's little theorem, which states $a^{p-1}\equiv 1\mod p$ for some nonzero $a\in\mathbb Z/p\mathbb Z$. 
+Notably there are only $p-1$ different values for powers of a nonzero $a$.
+<br />
+What this means for this setup is that this exponent lives in some ring $\mathbb Z/(p-1)\mathbb Z$ whose order is one 
+less than a prime.
+</NoteBox>
+Yasmina claims they found such a $w$, but would like to keep it a secret. To be able to prove to Xavier 
+that their $w$ satisfies $b^w\equiv y$, without revealing $w$, she decides to split $w$ into 128 
+<a href="share">additive shares</a> $[w]_1,[w]_2,\dots,[w]_{128}$, and simulates the following <a href="mpc">multi-party computation</a>:
+- Have 128 simulated parties take the exponentials $[b^w]_i=b^{[w]_i}$ privately,
+- Broadcast the values of $[b^w]_i$ to all the other parties,
+- Collect all the broadcasted values of $[b^w]_i$ and multiply them together to get $y=[b^w]_1\cdots[b^w]_{128}$.
 
 Yasmina then collates all the information each party gains at the end (say with a <a href="commit">Merkle tree commit</a>) into 
-collections called views and sends them to Xavier, claiming it is a computation of $b^x\equiv y$ split across 
+collections called views and sends them to Xavier, claiming it is a computation of $b^w\equiv y$ split across 
 128 parties.
 
 They tell Xavier is allowed to opens whatever 127 of the 128 views of the computation that he likes to verify
@@ -33,20 +40,20 @@ again, decreasing the chances of cheating without being caught exponentially.
 
 # General Definition for MPCitH
 The above procedure is an example of **MPC in the head** (MPCitH), a <a href="intro">zero knowledge proof</a> based on a multi-party 
-computation. The prover would like to indicate to the verifier knowledge of some secret $x$ which when fed 
-through some functionality gives a target value $y$:
+computation. The prover would like to indicate to the verifier knowledge of some secret $w$ which when fed 
+through some functionality gives a target value $y$ (which might also depend on some public parameters $x$):
 <div style={{ textAlign: 'center' }}>
-$$F(x)=y.$$
+$$f(w,x)=y.$$
 </div>
-- This is typically chosen to be an $\mathsf{NP}$ relation; where knowing $x$, verifying $y=F(x)$ takes a
-polynomial amount of time to the input size, but the task of finding a preimage $x$ knowing $y$ on
+- This is typically chosen to be an $\mathsf{NP}$ relation; where knowing $w$, verifying $y=f(w,x)$ takes a
+polynomial amount of time to the input size, but the task of finding a preimage $w$ knowing $y$ on
 average takes superpolynomial time. 
 - Common examples include hashing functions like SHA, or Poseidon; or the discrete logarithm problem similar
 to our example, over a suitably 'difficult' group.
 
-To do this, the prover will split the secret $x$ into $n$ shares and simulate a multi-party 
-computation to compute $F(x)$ (hence the name MPC in the head).
-- The prover generates shares $[x]_i$ and then runs MPC in their head to compute $F(x)$ from the split
+To do this, the prover will split the secret $w$ into $n$ shares and simulate a multi-party 
+computation to compute $f(w,x)$ (hence the name MPC in the head).
+- The prover generates shares $[w]_i$ and then runs MPC in their head to compute $f(w)$ from the split
 of shares. While doing this, they collate **views** of each party $V_1,\dots V_n$. Each view $V_i$ 
 consists of the $i$th party's private input, records of their computations and records of messages sent 
 and recieved.
@@ -66,8 +73,8 @@ scheme used is $t$-private where $t$ is the number of views which the verifier r
 
 Evidently it is also complete so long as the MPC protocol is correct.
 
-Soundness and proof of knowledge follows from the fact that a malicious prover which does not know $x$ 
-must fudge the computation of $F$, visible in one of the views, which the verifier can catch if they 
+Soundness and proof of knowledge follows from the fact that a malicious prover which does not know $w$ 
+must fudge the computation of $f$, visible in one of the views, which the verifier can catch if they 
 open said view. Each repetition of this process makes the chance of the verifier missing this vanishingly 
 small.
 
@@ -86,6 +93,15 @@ works for any ZKP which follows the following structure
     transformation to work. Such ZKPs which function like this are called public-coin.
 3. The prover computes the final proof based on the commitment and the challenge.
 
+<NoteBox title="An analogy with sports" collapsible>
+Alice's younger cousin Zac loves playing handball with their friends. Him and his friends like to keep 
+track of the their highest rally length against a particularly bumpy wall, and use it as a heuristic 
+for their handball skill.
+Notably, the bumps add some unpredictability, similar to the suprising bounces of a good opponent.
+Such play against a wall can also be cheesed given good enough knowledge of the behaviour of bounces off the wall. 
+Because of this Zac and their friends take extra care in truly evaluating the skill of a player playing against a wall.
+</NoteBox>
+
 The heuristic works like this, say we had access to some **random oracle**:
 - That is a mathematical function which for a space of inputs, uniformly generates outputs in a 'random' manner.
 - In practice hashing functions are typically used as these oracles.
@@ -97,19 +113,15 @@ which will produce a seemingly random challenge for the verifier to respond to.
 In this way, the verifier uses the random oracle instead of a particlar prover, to create unpredictable
 challenges which the verifier then answers.
 
-<NoteBox title="If the verifier makes the choices for the challenges, can't they hide their cheats?" collapsible>
-The verifier must use the random oracle to issue out the challenges, and any prover can validate that they
-used the oracle honestly.
+<NoteBox title="If the verifier makes the choices for the challenges, can't they hide their cheats?" collapsible variant="warning">
+The verifier must use the random oracle to issue out the challenges. As a mathematical function, 
+this oracling is deterministic, and any prover can validate that they used the oracle honestly.
+<br />
 There is some nuances here, namely no mathematical function can truly be 'random', only very difficult to
 predict or back-calculate some desired result. It may possible, though difficult for the prover to forge a 
 valid non-interactive proof transcript this way; a good Fiat-Shamir transformation makes this computationally 
 infeasable to pull off.
 </NoteBox>
-
-As an analogy, this is like playing tennis with a particularly rugged training wall. The unpredictability of the
-bumps act similar to the suprising serves of a good opponent, and could demonstrate a player's test of skill.
-Such play can also be cheesed given good enough knowledge of the behaviour of bounces off the wall, so care
-must be taken in evaluating the soundness of this test.
 
 ### Further Reading
 🞂 https://blog.zksecurity.xyz/posts/mpcith-intro/
