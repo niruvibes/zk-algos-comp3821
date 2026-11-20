@@ -28,10 +28,9 @@ Of course, for Xavier and Yasmina to trust that this scheme works, then this com
 
 <NoteBox title="Aren't commitment schemes already Zero-Knowledge Proofs?" collapsible>
     Not exactly! Remember that a zero knowledge proof means the verifier **never** learns the secret. A commitment scheme lets you hide a value, but to verify it you must **reveal the actual message**. 
-    Zero knowledge proofs do use commitments schemes though, but have to combine other ideas such as secret sharing (which is the topic for the next page).
+    Zero knowledge proofs do use commitments schemes though, but have to combine other ideas such as <a href="share">secret sharing</a> (which is the topic for the next page).
 </NoteBox>
-
-
+<br />
 ## Hiding and binding
 For a commitment scheme to be **hiding**, it means that the commitment $c$ cannot easily be reversed to find which $m$. 
 This is one reason why commitment schemes usually have some blinding factor $r$ as well. 
@@ -94,7 +93,7 @@ This scheme is helpful when there are multiple messages as only one commit needs
 This in particular is very helpful for later when we discuss MPCitH ZKPs.
 
 # Pedersen Commitment Scheme
-<NoteBox title="Warning: Not required reading for MPCitH!" collapsible variant="warning">
+<NoteBox title="Note: Extra reading">
     This is **not** required to understand the MPC in the Head protocol, and is much more difficult than the other schemes.
     This is some extra bonus content to highlight an interesting example of a commitment scheme which is perfectly hiding.
 </NoteBox>
@@ -162,7 +161,7 @@ As such, this value $R$ serves as a digital signature to prove that Xavier made 
 
 Importantly, if Yasmina was to actually use these tokens, then Xavier would privately reveal her message $2$ and blinding factor $r_1$ so that Yasmina knows how much she got.
 In addition, Yasmina can use this blinding factor and the commitment so she also knows the $R$ value for her own future transactions!
-
+<br />
 ### Further Reading
 🞂 https://www.youtube.com/watch?v=UBLUmCA0tQI
 
