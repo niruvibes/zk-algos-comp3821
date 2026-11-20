@@ -93,7 +93,14 @@ works for any ZKP which follows the following structure
     - The fact that the verifier's role only involves issuing 'random' challenges is crucial for this 
     transformation to work. Such ZKPs which function like this are called public-coin.
 3. The prover computes the final proof based on the commitment and the challenge.
-<br />
+
+<NoteBox title="An analogy with sports" collapsible>
+Consider playing tennis with a particularly rugged training wall. The unpredictability of the
+bumps act similar to the suprising serves of a good opponent, and could demonstrate a player's test of skill.
+Such play against a wall can also be cheesed given good enough knowledge of the behaviour of bounces off the wall. 
+This means that care must be taken in truly evaluating the skill of a player playing against a wall.
+</NoteBox>
+
 The heuristic works like this, say we had access to some **random oracle**:
 - That is a mathematical function which for a space of inputs, uniformly generates outputs in a 'random' manner.
 - In practice hashing functions are typically used as these oracles.
@@ -106,8 +113,8 @@ In this way, the verifier uses the random oracle instead of a particlar prover, 
 challenges which the verifier then answers.
 
 <NoteBox title="If the verifier makes the choices for the challenges, can't they hide their cheats?" collapsible variant="warning">
-The verifier must use the random oracle to issue out the challenges, and any prover can validate that they
-used the oracle honestly.
+The verifier must use the random oracle to issue out the challenges. As a mathematical function, 
+this oracling is deterministic, and any prover can validate that they used the oracle honestly.
 <br />
 There is some nuances here, namely no mathematical function can truly be 'random', only very difficult to
 predict or back-calculate some desired result. It may possible, though difficult for the prover to forge a 
@@ -115,11 +122,6 @@ valid non-interactive proof transcript this way; a good Fiat-Shamir transformati
 infeasable to pull off.
 </NoteBox>
 
-As an analogy, this is like playing tennis with a particularly rugged training wall. The unpredictability of the
-bumps act similar to the suprising serves of a good opponent, and could demonstrate a player's test of skill.
-Such play against a wall can also be cheesed given good enough knowledge of the behaviour of bounces off the wall. 
-This means that care must be taken in evaluating the soundness of this test.
-<br />
 ### Further Reading
 🞂 https://blog.zksecurity.xyz/posts/mpcith-intro/
 
