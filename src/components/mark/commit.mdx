@@ -30,7 +30,6 @@ Of course, for Xavier and Yasmina to trust that this scheme works, then this com
     Not exactly! Remember that a zero knowledge proof means the verifier **never** learns the secret. A commitment scheme lets you hide a value, but to verify it you must **reveal the actual message**. 
     Zero knowledge proofs do use commitments schemes though, but have to combine other ideas such as <a href="share">secret sharing</a> (which is the topic for the next page).
 </NoteBox>
-<br />
 ## Hiding and binding
 For a commitment scheme to be **hiding**, it means that the commitment $c$ cannot easily be reversed to find which $m$. 
 This is one reason why commitment schemes usually have some blinding factor $r$ as well. 
