@@ -38,8 +38,16 @@ Let Xavier be the verifier and Yasmina be the prover because we didn’t like Al
 4. Yasmina responds to Xavier’s request with her completed zero-knowledge proof.
 5. Xavier uses Yasmina’s proof to verify that she has the correct information.
 <br />
-
+<div style={{ textAlign: 'center' }}>
+    <img src="/zk-algos-comp3821/zkp_steps.png" />
+</div>
+<br />
 # Interactive vs. Non-Interactive ZKPs
+A ZKP is said to be interactive if it requires several rounds of back and forth communication before
+the verifier chooses to accept or reject the prover's claim. On the other hand, non-interactive ZKPs
+exist, where the prover only needs to publish a proof once which the verifier can verify without further
+communication.
+
 ## Graph 3-Colouring ZKP
 The prover is given a graph, $G=(V,E)$, that they claim to be 3-colourable, 
 meaning that for any vertex $V$ that is labelled a certain colour, any neighbouring 
