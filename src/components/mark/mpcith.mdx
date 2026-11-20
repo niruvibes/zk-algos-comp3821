@@ -3,9 +3,9 @@ import NoteBox from '../interactive/NoteBox.astro';
 # A Multi-Party Computation in the Head
 Lets return to Xavier and Yasmina, they are both interested in the discrete logarithm problem, that is
 given some numbers $b,y\in\mathbb Z/p\mathbb Z$ (for large prime $p$), what is the 
-$x\in\mathbb Z/(p-1)\mathbb Z$ such that
+$w\in\mathbb Z/(p-1)\mathbb Z$ such that
 <div style={{ textAlign: 'center' }}>
-$$F(x)=b^x\equiv y\quad\mod p.$$
+$$f(w,b)=b^w\equiv y\quad\mod p.$$
 </div>
 <NoteBox title="Why is the exponent modulo p-1?" collapsible>
 This is due to Fermat's little theorem, which states $a^{p-1}\equiv 1\mod p$ for some nonzero $a\in\mathbb Z/p\mathbb Z$. 
@@ -14,15 +14,15 @@ Notably there are only $p-1$ different values for powers of a nonzero $a$.
 What this means for this setup is that this exponent lives in some ring $\mathbb Z/(p-1)\mathbb Z$ whose order is one 
 less than a prime.
 </NoteBox>
-Yasmina claims they found such a $x$, but would like to keep it a secret. To be able to prove to Xavier 
-that their $x$ satisfies $b^x\equiv y$, without revealing $x$, she decides to split $x$ into 128 
-<a href="share">additive shares</a> $[x]_1,[x]_2,\dots,[x]_{128}$, and simulates the following <a href="mpc">multi-party computation</a>:
-- Have 128 simulated parties take the exponentials $[b^x]_i=b^{[x]_i}$ privately,
-- Broadcast the values of $[b^x]_i$ to all the other parties,
-- Collect all the broadcasted values of $[b^x]_i$ and multiply them together to get $y=[b^x]_1\cdots[b^x]_{128}$.
+Yasmina claims they found such a $w$, but would like to keep it a secret. To be able to prove to Xavier 
+that their $w$ satisfies $b^w\equiv y$, without revealing $w$, she decides to split $w$ into 128 
+<a href="share">additive shares</a> $[w]_1,[w]_2,\dots,[w]_{128}$, and simulates the following <a href="mpc">multi-party computation</a>:
+- Have 128 simulated parties take the exponentials $[b^w]_i=b^{[w]_i}$ privately,
+- Broadcast the values of $[b^w]_i$ to all the other parties,
+- Collect all the broadcasted values of $[b^w]_i$ and multiply them together to get $y=[b^w]_1\cdots[b^w]_{128}$.
 
 Yasmina then collates all the information each party gains at the end (say with a <a href="commit">Merkle tree commit</a>) into 
-collections called views and sends them to Xavier, claiming it is a computation of $b^x\equiv y$ split across 
+collections called views and sends them to Xavier, claiming it is a computation of $b^w\equiv y$ split across 
 128 parties.
 
 They tell Xavier is allowed to opens whatever 127 of the 128 views of the computation that he likes to verify
@@ -41,20 +41,20 @@ again, decreasing the chances of cheating without being caught exponentially.
 <br />
 # General Definition for MPCitH
 The above procedure is an example of **MPC in the head** (MPCitH), a <a href="intro">zero knowledge proof</a> based on a multi-party 
-computation. The prover would like to indicate to the verifier knowledge of some secret $x$ which when fed 
-through some functionality gives a target value $y$:
+computation. The prover would like to indicate to the verifier knowledge of some secret $w$ which when fed 
+through some functionality gives a target value $y$ (which might also depend on some public parameters $x$):
 <div style={{ textAlign: 'center' }}>
-$$F(x)=y.$$
+$$f(w,x)=y.$$
 </div>
-- This is typically chosen to be an $\mathsf{NP}$ relation; where knowing $x$, verifying $y=F(x)$ takes a
-polynomial amount of time to the input size, but the task of finding a preimage $x$ knowing $y$ on
+- This is typically chosen to be an $\mathsf{NP}$ relation; where knowing $w$, verifying $y=f(w,x)$ takes a
+polynomial amount of time to the input size, but the task of finding a preimage $w$ knowing $y$ on
 average takes superpolynomial time. 
 - Common examples include hashing functions like SHA, or Poseidon; or the discrete logarithm problem similar
 to our example, over a suitably 'difficult' group.
 
-To do this, the prover will split the secret $x$ into $n$ shares and simulate a multi-party 
-computation to compute $F(x)$ (hence the name MPC in the head).
-- The prover generates shares $[x]_i$ and then runs MPC in their head to compute $F(x)$ from the split
+To do this, the prover will split the secret $w$ into $n$ shares and simulate a multi-party 
+computation to compute $f(w,x)$ (hence the name MPC in the head).
+- The prover generates shares $[w]_i$ and then runs MPC in their head to compute $f(w)$ from the split
 of shares. While doing this, they collate **views** of each party $V_1,\dots V_n$. Each view $V_i$ 
 consists of the $i$th party's private input, records of their computations and records of messages sent 
 and recieved.
@@ -74,8 +74,8 @@ scheme used is $t$-private where $t$ is the number of views which the verifier r
 
 Evidently it is also complete so long as the MPC protocol is correct.
 
-Soundness and proof of knowledge follows from the fact that a malicious prover which does not know $x$ 
-must fudge the computation of $F$, visible in one of the views, which the verifier can catch if they 
+Soundness and proof of knowledge follows from the fact that a malicious prover which does not know $w$ 
+must fudge the computation of $f$, visible in one of the views, which the verifier can catch if they 
 open said view. Each repetition of this process makes the chance of the verifier missing this vanishingly 
 small.
 
