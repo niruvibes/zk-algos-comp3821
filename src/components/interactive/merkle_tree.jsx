@@ -187,7 +187,7 @@ export default function MerkleTree() {
   }
 
   return (
-    <section className={styles.demo} aria-label="Interactive Merkle tree">
+    <section id="merkle-tree-demo" className={styles.demo} aria-label="Interactive Merkle tree">
       <header className={styles.toolbar}>
         <h3 className={styles.title}>Merkle Tree Commitment Scheme Demo</h3>
       </header>

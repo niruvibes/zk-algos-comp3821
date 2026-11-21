@@ -12,6 +12,7 @@
   --vertex: #638189;
   --panel-padding: clamp(0.75rem, 3vw, 1.5rem);
   margin-block: 1rem 2rem;
+  scroll-margin-top: 7rem;
   border: 1px solid var(--line);
   border-radius: 0.875rem;
   overflow: clip;

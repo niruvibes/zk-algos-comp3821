@@ -19,7 +19,7 @@ export default function additive_secret_sharing({initialOrder, initialSecret}) {
     }
 
     return (
-        <section className={styles.demo} aria-label="Additive secret sharing generator">
+        <section id="additive-secret-sharing-demo" className={styles.demo} aria-label="Additive secret sharing generator">
             <header className={styles.toolbar}>
                 <h3 className={styles.title}>Additive Secret Sharing Generator</h3>
             </header>

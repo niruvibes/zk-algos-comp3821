@@ -191,7 +191,7 @@ export default function App() {
   }
 
   return (
-    <section className={styles.demo} aria-label="Interactive secret resharing">
+    <section id="secret-resharing-demo" className={styles.demo} aria-label="Interactive secret resharing">
       <header className={styles.toolbar}>
           <h3 className={styles.title}>Additive Secret Resharing Demo</h3>
       </header>

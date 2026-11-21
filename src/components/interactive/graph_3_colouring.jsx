@@ -140,7 +140,7 @@ export default function Graph3Colouring() {
   }
 
   return (
-    <section className={styles.demo} aria-label="Interactive 3-colouring proof">
+    <section id="graph-3-colouring-demo" className={styles.demo} aria-label="Interactive 3-colouring proof">
       <header className={styles.toolbar}>
         <fieldset className={styles.mode}>
           <legend>Prover’s strategy</legend>
