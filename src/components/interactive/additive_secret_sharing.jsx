@@ -29,7 +29,7 @@ export default function additive_secret_sharing({initialOrder, initialSecret}) {
                     <p className={styles.boardLabel}>Generated shares</p>
                     <div className={styles.result} role="status">
                         {shares === null ? (
-                            <p>Generate five shares to see how they add up modulo the prime field order.</p>
+                            <p>Generate five shares to see how they add up modulo the ring characteristic.</p>
                         ) : (
                             <p className={styles.outcome}>
                                 {shares.join(' + ')} ≡ <strong>{secret}</strong> mod {order}
@@ -46,7 +46,7 @@ export default function additive_secret_sharing({initialOrder, initialSecret}) {
                             onChange={(e) => setSecret(e.target.value)} />
                     </label>
                     <label className={styles.field}>
-                        Prime field order
+                        Ring characteristic
                         <input type="number" value={order}
                             onChange={(e) => setOrder(Number(e.target.value))} />
                     </label>
